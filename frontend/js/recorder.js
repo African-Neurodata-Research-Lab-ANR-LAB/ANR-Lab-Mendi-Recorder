@@ -1,17 +1,25 @@
-class MendiRecorder{
-constructor(marker){
-this.marker=marker;
+export class Recorder{
+
+constructor(){
+this.running=false;
 this.packets=[];
 }
 
-addPacket(packet){
-this.packets.push(packet);
+start(){
+this.running=true;
 }
 
-getSession(){
-return {
-packets:this.packets,
-markers:this.marker.getEvents()
-};
+stop(){
+this.running=false;
 }
+
+add(packet){
+if(this.running){
+this.packets.push({
+time:new Date().toISOString(),
+packet:Array.from(packet)
+});
+}
+}
+
 }

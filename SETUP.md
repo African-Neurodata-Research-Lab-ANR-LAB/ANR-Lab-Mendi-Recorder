@@ -1,17 +1,12 @@
-# Setup Guide
+# Setup v2
 
-1. Extract the ZIP.
-2. Open the folder in VS Code.
-3. Open frontend/index.html in a browser.
+1. Clone repository
+2. Open frontend/index.html using a Bluetooth-enabled browser (Chrome/Edge)
+3. Connect supported device
+4. Start recording
 
-For GitHub:
+Development:
 
-git init
 git add .
-git commit -m "ANR Lab Mendi Recorder v1"
-git branch -M main
-git remote add origin YOUR_REPOSITORY_URL
-git push -u origin main
-
-Note:
-v1 is the software foundation. Real BLE communication is added in v2.
+git commit -m "ANR Mendi Recorder v2 BLE foundation"
+git push
