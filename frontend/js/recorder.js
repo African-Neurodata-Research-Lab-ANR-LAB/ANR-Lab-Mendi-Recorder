@@ -1,4 +1,4 @@
-export class Recorder{
+export class Recorder {
 
 constructor(){
 this.running=false;
@@ -15,11 +15,13 @@ this.running=false;
 
 add(packet){
 if(this.running){
-this.packets.push({
-time:new Date().toISOString(),
-packet:Array.from(packet)
-});
+this.packets.push(packet);
+document.getElementById('packetCounter').innerText=this.packets.length;
 }
+}
+
+getData(){
+return this.packets;
 }
 
 }

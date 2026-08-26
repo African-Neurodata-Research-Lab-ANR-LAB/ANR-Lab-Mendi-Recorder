@@ -1,23 +1,34 @@
-import {MENDI} from './config.js';
+import {MENDI_CONFIG} from './config.js';
 
-export class MendiBLE{
+export class MendiBLE {
 
-constructor(onPacket){
-this.onPacket=onPacket;
-this.device=null;
+constructor(parser, recorder){
+this.parser=parser;
+this.recorder=recorder;
 }
 
 async connect(){
 
-this.device = await navigator.bluetooth.requestDevice({
-filters:[{namePrefix:MENDI.namePrefix}],
-optionalServices:[MENDI.serviceUUID]
+const device =
+await navigator.bluetooth.requestDevice({
+
+filters:[
+{namePrefix:MENDI_CONFIG.namePrefix}
+],
+
+optionalServices:[
+MENDI_CONFIG.serviceUUID
+]
+
 });
 
 document.getElementById('status').innerText =
-'Device selected: '+this.device.name;
+'Selected: '+device.name;
 
-console.log(this.device);
+const server =
+await device.gatt.connect();
+
+return server;
 
 }
 

@@ -1,9 +1,8 @@
-# NIRS Pipeline
+Future processing:
 
-Planned:
-
-Raw intensity
+Raw packets
+-> Intensity
 -> Optical density
 -> HbO/HbR/HbT
 -> SNIRF
--> MNE-NIRS analysis
+-> MNE-NIRS

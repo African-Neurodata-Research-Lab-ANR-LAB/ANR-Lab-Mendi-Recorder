@@ -1,4 +1,4 @@
-export class MarkerEngine{
+export class MarkerEngine {
 
 constructor(){
 this.events=[];
@@ -6,16 +6,18 @@ this.events=[];
 
 add(type,message){
 
-const e={
+const event={
 time:new Date().toISOString(),
 type,
 message
 };
 
-this.events.push(e);
+this.events.push(event);
 
 const box=document.getElementById('markers');
-if(box) box.innerHTML += `<p>${type}: ${message}</p>`;
+if(box){
+box.innerHTML += `<p>${type}: ${message}</p>`;
+}
 
 }
 

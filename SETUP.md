@@ -1,12 +1,17 @@
-# Setup v2
+# Setup v3
 
-1. Clone repository
-2. Open frontend/index.html using a Bluetooth-enabled browser (Chrome/Edge)
-3. Connect supported device
-4. Start recording
+Requirements:
+- Chrome or Edge browser
+- Bluetooth enabled
+- HTTPS or localhost environment
 
-Development:
+Steps:
+1. Open frontend/index.html
+2. Connect Mendi device
+3. Start recording
+
+Git:
 
 git add .
-git commit -m "ANR Mendi Recorder v2 BLE foundation"
+git commit -m "ANR Mendi Recorder v3 BLE integration foundation"
 git push
