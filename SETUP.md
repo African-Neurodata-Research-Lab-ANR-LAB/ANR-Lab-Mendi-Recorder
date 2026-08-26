@@ -1,10 +1,17 @@
-# Setup v5
+# ANR Lab Mendi Recorder v6 Setup
 
-1. Extract repository
-2. Open with VS Code
-3. Run using localhost or GitHub Pages
-4. Connect Bluetooth-enabled browser
+Requirements:
+- Chrome or Edge browser
+- Bluetooth enabled computer
+- HTTPS or localhost
 
-Next:
-- insert validated Mendi BLE protocol
-- test with physical device
+Run:
+1. Open frontend/index.html
+2. Click Connect Mendi
+3. Start recording
+4. Monitor packets
+
+Development:
+git add .
+git commit -m "ANR Mendi Recorder v6 acquisition pipeline"
+git push

@@ -1,27 +1,36 @@
 export class Recorder {
 
 constructor(){
-this.running=false;
+this.recording=false;
 this.packets=[];
 }
 
 start(){
-this.running=true;
+this.recording=true;
 }
 
 stop(){
-this.running=false;
+this.recording=false;
 }
 
 add(packet){
-if(this.running){
+
+if(this.recording){
 this.packets.push(packet);
-document.getElementById('packetCounter').innerText=this.packets.length;
-}
+
+document.getElementById("packetCount").innerText =
+this.packets.length;
 }
 
-getData(){
-return this.packets;
+}
+
+getSession(){
+
+return {
+created:new Date().toISOString(),
+packets:this.packets
+};
+
 }
 
 }

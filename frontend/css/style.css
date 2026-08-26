@@ -1,19 +1,16 @@
 body{
-background:#061522;
+background:#071827;
 color:white;
 font-family:Arial;
-padding:30px;
-}
-
-.panel{
-border:1px solid #444;
-padding:15px;
-margin:15px 0;
-border-radius:10px;
+padding:40px;
 }
 
 button{
 padding:12px;
 margin:5px;
-border-radius:8px;
+}
+
+canvas{
+border:1px solid #555;
+margin-top:20px;
 }

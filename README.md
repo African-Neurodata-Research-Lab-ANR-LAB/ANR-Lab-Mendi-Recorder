@@ -1,23 +1,19 @@
-# ANR Lab Mendi Recorder v5
+# ANR Lab Mendi Recorder v6
 
 African Neurodata Research Lab (ANR Lab)
 University of Port Harcourt
 
-## v5: Live Research Recorder Layer
+## v6: Real Acquisition Pipeline Foundation
 
-This version focuses on:
-- live acquisition architecture
-- signal dashboard foundation
-- device monitoring
-- event markers
-- session management
-
-Pipeline:
+v6 introduces the real acquisition architecture:
 
 Mendi Device
- -> BLE Stream
- -> Packet Parser
- -> Live Dashboard
- -> Recorder
- -> Research Session Export
- -> NIRS Pipeline
+ -> Web Bluetooth
+ -> Notification Stream
+ -> Packet Decoder
+ -> Quality Monitor
+ -> Session Recorder
+ -> Export Pipeline
+
+Important:
+BLE UUIDs and packet fields remain configurable until validated with device testing/APK protocol extraction.

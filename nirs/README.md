@@ -1,15 +1,15 @@
-NIRS research pipeline:
+Future NIRS processing:
 
-Raw Mendi signal
-|
-Quality Control
-|
-Optical Density
-|
+Raw packets
+ |
+Signal extraction
+ |
+Optical density
+ |
 Beer-Lambert
-|
+ |
 HbO/HbR/HbT
-|
+ |
 SNIRF
-|
-Analysis
+ |
+MNE-NIRS

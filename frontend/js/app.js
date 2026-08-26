@@ -1,41 +1,28 @@
-import {MarkerEngine} from './markers.js';
-import {SessionManager} from './session.js';
-import {SignalDashboard} from './dashboard.js';
+import {BLEStream} from './ble_stream.js';
+import {Recorder} from './recorder.js';
+import {PacketDecoder} from './packet_decoder.js';
 
-const markers=new MarkerEngine();
-const session=new SessionManager();
-const dashboard=new SignalDashboard();
+const recorder=new Recorder();
+const decoder=new PacketDecoder();
 
-connectBtn.onclick=()=>{
+const ble=new BLEStream((packet)=>{
 
-document.getElementById('status').innerText=
-'Ready for Mendi connection';
+const decoded=decoder.decode(packet);
+recorder.add(decoded);
 
-markers.add(
-'DEVICE',
-'Connection initiated'
-);
+});
 
+
+connectBtn.onclick=async()=>{
+await ble.connect();
 };
 
 
 startBtn.onclick=()=>{
-
-markers.add(
-'RECORDING',
-'Recording started'
-);
-
+recorder.start();
 };
 
 
 stopBtn.onclick=()=>{
-
-markers.add(
-'RECORDING',
-'Recording stopped'
-);
-
+recorder.stop();
 };
-
-
