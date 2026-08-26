@@ -1,17 +1,41 @@
-import {DeviceManager} from './device_manager.js';
-import {SessionRecorder} from './session.js';
+import {MarkerEngine} from './markers.js';
+import {SessionManager} from './session.js';
+import {SignalDashboard} from './dashboard.js';
 
-const device=new DeviceManager();
-const recorder=new SessionRecorder();
+const markers=new MarkerEngine();
+const session=new SessionManager();
+const dashboard=new SignalDashboard();
 
-connect.onclick=async()=>{
-await device.connect();
+connectBtn.onclick=()=>{
+
+document.getElementById('status').innerText=
+'Ready for Mendi connection';
+
+markers.add(
+'DEVICE',
+'Connection initiated'
+);
+
 };
 
-start.onclick=()=>{
-recorder.start();
+
+startBtn.onclick=()=>{
+
+markers.add(
+'RECORDING',
+'Recording started'
+);
+
 };
 
-stop.onclick=()=>{
-recorder.stop();
+
+stopBtn.onclick=()=>{
+
+markers.add(
+'RECORDING',
+'Recording stopped'
+);
+
 };
+
+

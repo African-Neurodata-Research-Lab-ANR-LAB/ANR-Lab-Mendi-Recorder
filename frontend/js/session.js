@@ -1,33 +1,32 @@
-export class SessionRecorder {
+export class SessionManager{
 
 constructor(){
-this.packets=[];
-this.markers=[];
-this.recording=false;
+
+this.session={
+packets:[],
+markers:[],
+metadata:{
+lab:"African Neurodata Research Lab"
 }
-
-start(){
-this.recording=true;
-}
-
-stop(){
-this.recording=false;
-}
-
-add(packet){
-
-if(this.recording)
-this.packets.push(packet);
-
-}
-
-getSession(){
-
-return {
-packets:this.packets,
-markers:this.markers,
-created:new Date().toISOString()
 };
+
+}
+
+addPacket(packet){
+
+this.session.packets.push(packet);
+
+}
+
+addMarker(marker){
+
+this.session.markers.push(marker);
+
+}
+
+get(){
+
+return this.session;
 
 }
 

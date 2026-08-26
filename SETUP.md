@@ -1,19 +1,10 @@
-# Setup v4
+# Setup v5
 
-Requirements:
-- Chrome/Edge browser
-- Bluetooth enabled
-- Localhost or HTTPS
+1. Extract repository
+2. Open with VS Code
+3. Run using localhost or GitHub Pages
+4. Connect Bluetooth-enabled browser
 
-Steps:
-1. Open frontend/index.html
-2. Connect Mendi device
-3. Start recording
-4. Monitor packet stream
-
-Git:
-
-git add .
-git commit -m "ANR Mendi Recorder v4 device protocol foundation"
-git push
-
+Next:
+- insert validated Mendi BLE protocol
+- test with physical device

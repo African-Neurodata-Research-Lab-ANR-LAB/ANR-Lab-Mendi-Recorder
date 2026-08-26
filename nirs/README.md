@@ -1,8 +1,15 @@
-Future processing:
+NIRS research pipeline:
 
-Raw packets
--> Intensity
--> Optical density
--> HbO/HbR/HbT
--> SNIRF
--> MNE-NIRS
+Raw Mendi signal
+|
+Quality Control
+|
+Optical Density
+|
+Beer-Lambert
+|
+HbO/HbR/HbT
+|
+SNIRF
+|
+Analysis
