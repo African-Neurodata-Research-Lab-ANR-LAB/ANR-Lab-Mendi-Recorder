@@ -1,20 +1,23 @@
-# ANR Lab Mendi Recorder v3
+# ANR Lab Mendi Recorder v4
 
 African Neurodata Research Lab (ANR Lab)
 University of Port Harcourt
 
-## v3: Real BLE Integration Foundation
+## v4: Device Protocol + Research Capture Foundation
 
-New focus:
-- Web Bluetooth connection layer
-- Mendi device discovery
-- Service/characteristic configuration
-- Notification stream handling
-- Raw packet capture
-- Live recorder pipeline
-
-Protocol UUIDs remain configurable until validated from APK reverse engineering.
+v4 introduces:
+- validated BLE configuration workflow
+- notification stream architecture
+- raw packet preservation
+- device metadata capture
+- research session structure
 
 Pipeline:
 
-Mendi -> BLE -> Packet Receiver -> Parser -> Recorder -> Session Export
+Mendi Device
+ -> BLE Notification
+ -> Packet Parser
+ -> Raw Session Recorder
+ -> ZIP Export
+ -> NIRS/SNIRF Pipeline
+

@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ANR Lab Mendi Recorder v3</title>
+<title>ANR Lab Mendi Recorder v4</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<h1>🧠 ANR Lab Mendi Recorder v3</h1>
+
+<h1>🧠 ANR Lab Mendi Recorder v4</h1>
+<p>African Neurodata Research Lab</p>
 
 <button id="connect">Connect Mendi</button>
 <button id="start">Start Recording</button>
-<button id="stop">Stop Recording</button>
+<button id="stop">Stop</button>
+<button id="export">Export Session</button>
 
 <h2>Status</h2>
-<div id="status">Disconnected</div>
+<div id="status">Waiting</div>
 
-<h2>Live Packets</h2>
-<div id="packetCounter">0</div>
+<h2>Live Data</h2>
+<p>Packets: <span id="packets">0</span></p>
+<p>Temperature: <span id="temperature">--</span></p>
+<p>Battery: <span id="battery">--</span></p>
 
 <h2>Markers</h2>
 <div id="markers"></div>
