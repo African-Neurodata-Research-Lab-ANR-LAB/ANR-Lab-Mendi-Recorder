@@ -1,17 +1,13 @@
-# ANR Lab Mendi Recorder v6 Setup
+# Setup v7
 
-Requirements:
-- Chrome or Edge browser
-- Bluetooth enabled computer
-- HTTPS or localhost
+1. Extract repository
+2. Open in VS Code
+3. Run using localhost or HTTPS
+4. Connect Bluetooth-enabled browser
 
-Run:
-1. Open frontend/index.html
-2. Click Connect Mendi
-3. Start recording
-4. Monitor packets
+Git:
 
-Development:
 git add .
-git commit -m "ANR Mendi Recorder v6 acquisition pipeline"
+git commit -m "ANR Mendi Recorder v7 raw acquisition and export foundation"
 git push
+

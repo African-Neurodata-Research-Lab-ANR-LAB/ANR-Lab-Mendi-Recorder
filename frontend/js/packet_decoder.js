@@ -1,11 +1,11 @@
-export class PacketDecoder {
+export class PacketDecoder{
 
 decode(bytes){
 
 return {
-timestamp: Date.now(),
-length: bytes.length,
-raw: Array.from(bytes)
+timestamp:new Date().toISOString(),
+length:bytes.length,
+raw:Array.from(bytes)
 };
 
 }

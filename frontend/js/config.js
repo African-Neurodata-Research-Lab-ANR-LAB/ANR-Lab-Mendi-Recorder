@@ -1,4 +1,4 @@
-export const MENDI_CONFIG = {
+export const MENDI_CONFIG={
 namePrefix:"Mendi",
 serviceUUID:"",
 notifyUUID:"",

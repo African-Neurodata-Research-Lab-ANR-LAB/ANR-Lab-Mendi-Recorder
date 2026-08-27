@@ -1,15 +1,13 @@
-Future NIRS processing:
+Future pipeline:
 
-Raw packets
- |
+Raw Mendi data
+|
 Signal extraction
- |
+|
 Optical density
- |
+|
 Beer-Lambert
- |
+|
 HbO/HbR/HbT
- |
+|
 SNIRF
- |
-MNE-NIRS
