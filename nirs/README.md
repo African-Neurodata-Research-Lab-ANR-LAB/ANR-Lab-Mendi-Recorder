@@ -1,6 +1,6 @@
 NIRS pathway:
 
-Validated signal
+Mapped signal
 
 ↓
 
