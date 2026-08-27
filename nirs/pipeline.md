@@ -1,27 +1,15 @@
-# NIRS Pipeline
+NIRS pipeline:
 
-Mendi raw frames
-
-↓
-
+Raw Mendi frames
+|
 Decoded channels
-
-↓
-
+|
+Signal QC
+|
 Optical intensity
-
-↓
-
+|
 Optical density
-
-↓
-
-Beer-Lambert
-
-↓
-
-HbO / HbR / HbT
-
-↓
-
+|
+HbO/HbR/HbT
+|
 SNIRF

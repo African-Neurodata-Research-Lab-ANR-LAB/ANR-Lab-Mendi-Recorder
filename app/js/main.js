@@ -1,28 +1,26 @@
-import {DeviceManager} from '../../core/ble/device_manager.js';
-import {FrameDecoder} from '../../core/decoder/frame_decoder.js';
-import {LiveRecorder} from '../../core/recorder/live_recorder.js';
+import {SignalBuffer} from '../../core/signal/signal_buffer.js';
+import {QualityMonitor} from '../../core/signal/quality_monitor.js';
+import {LivePlot} from '../../core/visualization/live_plot.js';
+import {ExperimentMarker} from '../../core/markers/experiment_marker.js';
 
-const device = new DeviceManager();
-const decoder = new FrameDecoder();
-const recorder = new LiveRecorder();
+const buffer=new SignalBuffer();
+const quality=new QualityMonitor();
+const plot=new LivePlot();
+const marker=new ExperimentMarker();
 
-connectBtn.onclick = async()=>{
-
-await device.connect();
-
-status.innerText="Mendi connected";
-
+connect.onclick=()=>{
+status.innerText="Ready for Mendi stream";
 };
 
-recordBtn.onclick=()=>{
-
-recorder.start();
-
+start.onclick=()=>{
+marker.add("START");
 };
 
-markerBtn.onclick=()=>{
+stop.onclick=()=>{
+marker.add("STOP");
+};
 
-events.innerHTML +=
-'<p>Marker '+new Date().toISOString()+'</p>';
-
+marker.onclick=()=>{
+marker.add("EVENT");
+markers.innerHTML += "<p>Marker added</p>";
 };

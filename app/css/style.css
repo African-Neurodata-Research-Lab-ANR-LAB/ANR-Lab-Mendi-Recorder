@@ -9,3 +9,7 @@ button{
 padding:12px;
 margin:5px;
 }
+
+canvas{
+border:1px solid white;
+}

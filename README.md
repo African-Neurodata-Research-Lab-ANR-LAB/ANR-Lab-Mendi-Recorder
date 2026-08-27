@@ -1,21 +1,25 @@
-# ANR Lab Mendi Recorder v12
+# ANR Lab Mendi Recorder v13
 
 African Neurodata Research Lab (ANR Lab)
 University of Port Harcourt
 
-## v12: Mendi Protocol Integration Layer
+## v13: Live Signal Visualization and Research Export
 
-v12 prepares the recorder for validated Mendi communication.
+v13 introduces:
+
+- live signal dashboard foundation
+- timestamp synchronization
+- signal quality monitoring structure
+- research session ZIP preparation
+- automated experimental markers
 
 Pipeline:
 
 Mendi Device
- -> BLE Services
- -> Characteristic Mapping
+ -> BLE Stream
  -> Frame Decoder
  -> Signal Channels
- -> Recorder
- -> Export
- -> NIRS Pipeline
-
-Protocol values remain configurable until confirmed with hardware testing.
+ -> Quality Control
+ -> Live Dashboard
+ -> Session Export
+ -> NIRS Processing

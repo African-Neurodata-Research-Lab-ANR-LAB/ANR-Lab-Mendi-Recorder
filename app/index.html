@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ANR Lab Mendi Recorder v12</title>
+<title>ANR Lab Mendi Recorder v13</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<h1>ANR Lab Mendi Recorder v12</h1>
+<h1>ANR Lab Mendi Recorder v13</h1>
 
-<button id="connect">Connect</button>
-<button id="discover">Discover Services</button>
-<button id="record">Record</button>
-<button id="marker">Add Marker</button>
+<button id="connect">Connect Mendi</button>
+<button id="start">Start</button>
+<button id="stop">Stop</button>
+<button id="marker">Marker</button>
+<button id="export">Export</button>
 
 <h2>Status</h2>
-<p id="status">Waiting</p>
+<p id="status">Disconnected</p>
 
-<h2>Channels</h2>
-<div id="channels"></div>
+<h2>Signal Monitor</h2>
+<canvas id="signalCanvas" width="800" height="250"></canvas>
+
+<h2>Metrics</h2>
+<p>Packets: <span id="packets">0</span></p>
+<p>Quality: <span id="quality">--</span></p>
+
+<h2>Markers</h2>
+<div id="markers"></div>
 
 <script type="module" src="js/main.js"></script>
 </body>
