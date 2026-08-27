@@ -1,7 +1,28 @@
 # NIRS Pipeline
 
-Raw signal
--> Optical density
--> Beer Lambert
--> HbO/HbR/HbT
--> SNIRF
+Raw Mendi frames
+
+↓
+
+Decoded signal
+
+↓
+
+Quality Control
+
+↓
+
+Optical Intensity
+
+↓
+
+Optical Density
+
+↓
+
+HbO/HbR/HbT
+
+↓
+
+SNIRF
+

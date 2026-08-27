@@ -1,25 +1,20 @@
-# ANR Lab Mendi Recorder v13
+# ANR Lab Mendi Recorder v14
 
 African Neurodata Research Lab (ANR Lab)
 University of Port Harcourt
 
-## v13: Live Signal Visualization and Research Export
+## v14: Research Data Processing Preparation
 
-v13 introduces:
-
-- live signal dashboard foundation
-- timestamp synchronization
-- signal quality monitoring structure
-- research session ZIP preparation
-- automated experimental markers
+v14 focuses on making acquired data ready for neuroscience analysis.
 
 Pipeline:
 
 Mendi Device
  -> BLE Stream
- -> Frame Decoder
- -> Signal Channels
- -> Quality Control
- -> Live Dashboard
- -> Session Export
+ -> Decoder
+ -> Raw Session
+ -> CSV/JSON Export
+ -> Signal QC
  -> NIRS Processing
+ -> SNIRF
+

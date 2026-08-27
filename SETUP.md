@@ -1,20 +1,19 @@
-# Setup v13
+# Setup v14
 
 Requirements:
-- Chrome or Edge
+- Chrome/Edge
 - Bluetooth enabled computer
 - Mendi device
 
 Workflow:
-
-1. Connect Mendi
-2. Start acquisition
-3. Monitor live signal
-4. Add experimental markers
-5. Export session
+1. Connect device
+2. Acquire data
+3. Save raw session
+4. Export dataset
+5. Run preprocessing
 
 Git:
 
 git add .
-git commit -m "ANR Mendi Recorder v13 live visualization layer"
+git commit -m "ANR Mendi Recorder v14 research processing layer"
 git push
