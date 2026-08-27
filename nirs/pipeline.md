@@ -1,6 +1,13 @@
-Raw frames
--> Signal extraction
--> Optical density
--> Beer-Lambert
--> HbO/HbR/HbT
--> SNIRF
+NIRS pipeline:
+
+Raw packets
+ |
+Intensity extraction
+ |
+Optical density
+ |
+Beer-Lambert
+ |
+HbO/HbR/HbT
+ |
+SNIRF

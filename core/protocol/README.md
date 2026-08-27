@@ -1,4 +1,7 @@
-Protocol notes:
-- BLE UUID mapping
-- frame structure
-- packet validation
+Protocol layer:
+
+Reserved for:
+- validated UUIDs
+- BLE characteristics
+- packet frames
+- decoder notes
