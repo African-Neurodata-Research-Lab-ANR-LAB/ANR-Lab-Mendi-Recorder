@@ -1,24 +1,105 @@
-# ANR Lab Mendi Recorder v16
+# 🧠 ANR Lab Mendi Recorder
 
-African Neurodata Research Lab (ANR Lab)
+## Browser-Based fNIRS Acquisition Platform for Mendi Neurotechnology Devices
+
+Developed by:
+
+**African Neurodata Research Lab (ANR Lab)**  
 University of Port Harcourt
 
-## v16: Complete Research Dataset Workflow
+---
 
-v16 completes the research session packaging workflow.
+## Overview
 
-Goals:
-- capture acquisition sessions
-- generate structured datasets
-- preserve metadata
-- export analysis-ready files
+ANR Lab Mendi Recorder is an open research platform designed for:
 
-Pipeline:
+- wireless Mendi device acquisition
+- real-time signal monitoring
+- experimental event marking
+- research session recording
+- fNIRS data processing workflows
+- SNIRF-compatible analysis preparation
+
+---
+
+## Architecture
 
 Mendi Device
- -> BLE Acquisition
- -> Decoder
- -> Recorder
- -> Session Export
- -> QC
- -> NIRS Analysis
+
+↓
+
+Bluetooth Low Energy
+
+↓
+
+ANR Recorder
+
+↓
+
+Packet Decoder
+
+↓
+
+Session Manager
+
+↓
+
+Quality Control
+
+↓
+
+NIRS Pipeline
+
+↓
+
+Analysis
+
+---
+
+## Features
+
+- BLE acquisition framework
+- Live recording interface
+- Automated markers
+- Session export
+- Metadata preservation
+- NIRS processing preparation
+
+---
+
+## Repository Structure
+
+core/      Device communication and recording engine
+
+app/       Browser interface
+
+nirs/      fNIRS processing pipeline
+
+docs/      Documentation
+
+examples/ Sample datasets
+
+tests/     Testing
+
+---
+
+## Research Data Format
+
+Sessions are stored as:
+
+ANR_Mendi_Session.zip
+
+Contains:
+
+- raw_packets.csv
+- metadata.json
+- markers.csv
+- device.json
+- README.txt
+
+---
+
+## Status
+
+Research prototype under active development.
+

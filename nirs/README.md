@@ -1,13 +1,3 @@
-Future pipeline:
+# NIRS Pipeline
 
-Raw Mendi data
-|
-Signal extraction
-|
-Optical density
-|
-Beer-Lambert
-|
-HbO/HbR/HbT
-|
-SNIRF
+fNIRS processing modules.

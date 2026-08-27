@@ -1,18 +1,16 @@
-# Setup v16
+# Installation
 
 Requirements:
-- Chrome/Edge
-- Bluetooth enabled computer
-- Mendi device
+- Chrome/Edge browser
+- Bluetooth enabled device
+- Mendi hardware
 
-Workflow:
-1. Connect device
-2. Start acquisition
-3. Add markers
-4. Stop session
-5. Export dataset
+Run locally:
 
-Git:
+Open app/index.html using localhost.
+
+Development:
+
 git add .
-git commit -m "ANR Mendi Recorder v16 dataset workflow"
+git commit -m "message"
 git push

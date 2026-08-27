@@ -1,22 +1,18 @@
 # NIRS Pipeline
 
-Raw Mendi frames
+Raw frames
 
 ↓
 
-Decoded signal
+Optical intensity
 
 ↓
 
-Quality Control
+Optical density
 
 ↓
 
-Optical Intensity
-
-↓
-
-Optical Density
+Beer-Lambert conversion
 
 ↓
 
@@ -25,4 +21,3 @@ HbO/HbR/HbT
 ↓
 
 SNIRF
-

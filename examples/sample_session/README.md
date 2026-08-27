@@ -1,7 +1,3 @@
-Sample session folder.
+# Sample Session
 
-Future:
-- raw_packets.csv
-- metadata.json
-- markers.csv
-- device.json
+Example research recording.

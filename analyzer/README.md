@@ -1,6 +1,3 @@
-# ANR Analyzer
+# Analyzer
 
-Future modules:
-- visualization
-- reports
-- QC
+Visualization and reports.

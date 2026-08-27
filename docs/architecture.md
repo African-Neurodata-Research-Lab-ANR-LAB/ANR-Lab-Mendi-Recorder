@@ -8,6 +8,8 @@ Decoder
  |
 Recorder
  |
+Export
+ |
 NIRS
  |
-Analyzer
+Analysis

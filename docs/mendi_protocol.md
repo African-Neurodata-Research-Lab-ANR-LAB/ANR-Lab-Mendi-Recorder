@@ -1,9 +1,10 @@
-# Mendi Protocol Validation
+# Mendi Protocol
 
-To fill after device testing:
+Document:
 
 - BLE services
-- characteristic UUIDs
-- frame headers
-- channel order
-- sampling rate
+- Characteristics
+- Packet formats
+- Sampling information
+
+Validated values will be added after hardware testing.
