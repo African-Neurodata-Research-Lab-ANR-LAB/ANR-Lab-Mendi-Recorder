@@ -1,9 +1,9 @@
-// Insert validated Mendi BLE values here
+export const MENDI_CONFIG = {
 
-export const MENDI_CONFIG={
+namePrefix:"Mendi",
 
 serviceUUID:"",
-notifyCharacteristic:"",
-writeCharacteristic:""
+notifyCharacteristicUUID:"",
+writeCharacteristicUUID:""
 
 };

@@ -1,45 +1,28 @@
 import {DeviceManager} from '../../core/ble/device_manager.js';
-import {SessionRecorder} from '../../core/recorder/session_recorder.js';
+import {FrameDecoder} from '../../core/decoder/frame_decoder.js';
+import {LiveRecorder} from '../../core/recorder/live_recorder.js';
 
-const deviceManager=new DeviceManager();
+const device = new DeviceManager();
+const decoder = new FrameDecoder();
+const recorder = new LiveRecorder();
 
-const recorder=new SessionRecorder();
+connectBtn.onclick = async()=>{
 
+await device.connect();
 
-connect.onclick=async()=>{
-
-await deviceManager.connect();
-
-status.innerText="Mendi selected";
+status.innerText="Mendi connected";
 
 };
 
-
-record.onclick=()=>{
+recordBtn.onclick=()=>{
 
 recorder.start();
 
 };
 
+markerBtn.onclick=()=>{
 
-stop.onclick=()=>{
-
-recorder.stop();
-
-};
-
-
-marker.onclick=()=>{
-
-recorder.addMarker("EVENT");
-
-};
-
-
-export.onclick=()=>{
-
-console.log(
-recorder.get()
-);
+events.innerHTML +=
+'<p>Marker '+new Date().toISOString()+'</p>';
 
 };

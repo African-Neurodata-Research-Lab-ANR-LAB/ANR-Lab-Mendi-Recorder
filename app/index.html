@@ -1,38 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ANR Lab Mendi Recorder v10</title>
+<title>ANR Lab Mendi Recorder v11</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
 
-<h1>ANR Lab Mendi Recorder v10</h1>
-<p>African Neurodata Research Lab</p>
+<h1>ANR Lab Mendi Recorder v11</h1>
 
-<button id="connect">Connect Mendi</button>
-<button id="record">Start Recording</button>
-<button id="stop">Stop</button>
-<button id="marker">Add Marker</button>
-<button id="export">Export Session</button>
+<button id="connectBtn">Connect Mendi</button>
+<button id="discoverBtn">Discover Services</button>
+<button id="recordBtn">Record</button>
+<button id="markerBtn">Marker</button>
 
 <h2>Status</h2>
 <p id="status">Disconnected</p>
 
-<h2>Recording</h2>
-<p>Packets:
-<span id="packets">0</span>
-</p>
+<h2>Live Stream</h2>
+<p>Packets: <span id="packetCount">0</span></p>
 
-<p>Timer:
-<span id="timer">00:00</span>
-</p>
-
-<div id="dashboard">
-Live Signal Dashboard
-</div>
+<div id="events"></div>
 
 <script type="module" src="js/main.js"></script>
-
 </body>
 </html>

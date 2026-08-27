@@ -1,21 +1,20 @@
-export class DeviceManager{
+import {MENDI_CONFIG} from './mendi_config.js';
 
-constructor(){
-this.device=null;
-}
+export class DeviceManager {
 
 async connect(){
 
-this.device =
-await navigator.bluetooth.requestDevice({
+return await navigator.bluetooth.requestDevice({
 
 filters:[
-{namePrefix:"Mendi"}
+{namePrefix:MENDI_CONFIG.namePrefix}
+],
+
+optionalServices:[
+MENDI_CONFIG.serviceUUID
 ]
 
 });
-
-return this.device;
 
 }
 

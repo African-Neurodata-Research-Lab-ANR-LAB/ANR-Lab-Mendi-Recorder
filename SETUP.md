@@ -1,13 +1,18 @@
-# Setup v10
+# Setup v11
 
 Requirements:
-- Chrome / Edge
-- Bluetooth enabled computer
+- Chrome/Edge
+- Bluetooth enabled
 - HTTPS or localhost
 
-Development:
+Workflow:
+1. Open app
+2. Connect Mendi
+3. Discover services
+4. Subscribe to notifications
+5. Record stream
 
+Git:
 git add .
-git commit -m "ANR Mendi Recorder v10 BLE acquisition engine"
+git commit -m "ANR Mendi Recorder v11 BLE validation layer"
 git push
-

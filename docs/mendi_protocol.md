@@ -1,9 +1,9 @@
-# Mendi Protocol
+# Mendi Protocol Validation
 
-Pending validation:
+To complete:
 
 - Service UUID
-- Notify UUID
-- Write UUID
-- Packet format
+- Notification UUID
+- Packet frame format
+- Sensor channels
 

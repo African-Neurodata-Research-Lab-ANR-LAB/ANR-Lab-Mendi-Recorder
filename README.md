@@ -1,25 +1,20 @@
-# ANR Lab Mendi Recorder v10
+# ANR Lab Mendi Recorder v11
 
 African Neurodata Research Lab (ANR Lab)
 University of Port Harcourt
 
-## v10: Real BLE Acquisition Engine Foundation
+## v11: BLE Validation and Live Stream Layer
 
-v10 begins the transition from interface prototype to acquisition software.
+v11 focuses on connecting the software architecture to validated Mendi hardware workflows.
 
 Pipeline:
 
 Mendi Device
- |
-BLE GATT Connection
- |
-Characteristic Listener
- |
-Packet Decoder
- |
-Session Recorder
- |
-Dashboard
- |
-Research Export
+ -> BLE GATT
+ -> Service Discovery
+ -> Characteristic Notifications
+ -> Frame Decoder
+ -> Live Stream
+ -> Session Export
 
+UUID values remain configurable until confirmed from device testing.
