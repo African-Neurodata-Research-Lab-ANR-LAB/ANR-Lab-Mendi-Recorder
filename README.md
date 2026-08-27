@@ -1,14 +1,16 @@
-# ANR Lab Mendi Recorder v1.3
-## Packet Capture and Decoder Phase
+# ANR Lab Mendi Recorder v1.4
+## Signal Decoder Phase
 
-Purpose:
-Capture and analyze real BLE notification packets from the Mendi device.
+African Neurodata Research Lab (ANR Lab)
+
+v1.4 begins converting captured BLE packets into meaningful signal structures.
 
 Pipeline:
 
-Mendi
- -> BLE Notification
- -> Raw Packet Capture
- -> Packet Analyzer
- -> Decoder
- -> Research Dataset
+Mendi BLE Packets
+ -> Packet Decoder
+ -> Channel Extraction
+ -> Signal Buffer
+ -> Visualization
+ -> NIRS Processing
+

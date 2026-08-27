@@ -1,3 +1,19 @@
-# NIRS Pipeline
+NIRS pathway:
 
-fNIRS processing modules.
+Decoded signal
+
+↓
+
+Optical intensity
+
+↓
+
+Optical density
+
+↓
+
+HbO/HbR/HbT
+
+↓
+
+SNIRF
