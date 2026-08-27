@@ -1,18 +1,11 @@
-# ANR Lab Mendi Recorder v1.1
-## Hardware Validation Phase
+# ANR Lab Mendi Recorder v1.2.1
+## BLE Explorer Pro
 
-African Neurodata Research Lab (ANR Lab)
-University of Port Harcourt
+Improvement over v1.2.
 
-Purpose:
-Validate Mendi hardware communication and capture raw BLE packets.
-
-Pipeline:
-
-Mendi Device
- -> BLE Discovery
- -> GATT Services
- -> Notifications
- -> Raw Capture
- -> Session Export
+Adds:
+- characteristic inspection
+- notification capture controls
+- raw packet export preparation
+- improved device profiling
 
