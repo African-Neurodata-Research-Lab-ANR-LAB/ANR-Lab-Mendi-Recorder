@@ -1,4 +1,4 @@
-# Setup v15
+# Setup v16
 
 Requirements:
 - Chrome/Edge
@@ -7,13 +7,12 @@ Requirements:
 
 Workflow:
 1. Connect device
-2. Record session
-3. Add experimental markers
-4. Export dataset
-5. Run analysis pipeline
+2. Start acquisition
+3. Add markers
+4. Stop session
+5. Export dataset
 
 Git:
-
 git add .
-git commit -m "ANR Mendi Recorder v15 complete research session workflow"
+git commit -m "ANR Mendi Recorder v16 dataset workflow"
 git push
