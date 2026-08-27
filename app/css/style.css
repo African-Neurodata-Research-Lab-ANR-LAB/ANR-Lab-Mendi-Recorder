@@ -4,3 +4,14 @@ color:white;
 font-family:Arial;
 padding:40px;
 }
+
+button{
+padding:12px;
+margin:5px;
+}
+
+#dashboard{
+margin-top:30px;
+border:1px solid white;
+padding:30px;
+}

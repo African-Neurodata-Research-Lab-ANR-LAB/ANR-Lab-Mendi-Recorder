@@ -1,25 +1,25 @@
-# ANR Lab Mendi Recorder v1.0
+# ANR Lab Mendi Recorder v10
 
 African Neurodata Research Lab (ANR Lab)
 University of Port Harcourt
 
-A browser-based research recorder architecture for Mendi neurotechnology devices.
+## v10: Real BLE Acquisition Engine Foundation
 
-## Platform Goals
+v10 begins the transition from interface prototype to acquisition software.
 
-- BLE acquisition
-- Real-time signal monitoring
-- Automated event markers
-- Research session recording
-- NIRS processing pipeline
-- SNIRF-compatible analysis workflow
-
-## Architecture
+Pipeline:
 
 Mendi Device
--> BLE Layer
--> Decoder
--> Recorder
--> Export
--> NIRS Pipeline
--> Analyzer
+ |
+BLE GATT Connection
+ |
+Characteristic Listener
+ |
+Packet Decoder
+ |
+Session Recorder
+ |
+Dashboard
+ |
+Research Export
+

@@ -1,12 +1,13 @@
-# Setup Guide
+# Setup v10
 
-1. Clone repository
-2. Open in VS Code
-3. Run through localhost or HTTPS
-4. Connect Bluetooth-enabled browser
+Requirements:
+- Chrome / Edge
+- Bluetooth enabled computer
+- HTTPS or localhost
 
-Development workflow:
+Development:
 
 git add .
-git commit -m "message"
+git commit -m "ANR Mendi Recorder v10 BLE acquisition engine"
 git push
+

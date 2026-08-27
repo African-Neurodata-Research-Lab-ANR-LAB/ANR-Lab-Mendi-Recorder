@@ -1,3 +1,9 @@
-# Mendi Protocol Documentation
+# Mendi Protocol
 
-Reserved for validated device protocol information.
+Pending validation:
+
+- Service UUID
+- Notify UUID
+- Write UUID
+- Packet format
+

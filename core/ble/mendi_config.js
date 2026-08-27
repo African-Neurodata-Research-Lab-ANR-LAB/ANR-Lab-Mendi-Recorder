@@ -1,2 +1,9 @@
-// Mendi BLE UUID configuration
-// Populate after protocol validation
+// Insert validated Mendi BLE values here
+
+export const MENDI_CONFIG={
+
+serviceUUID:"",
+notifyCharacteristic:"",
+writeCharacteristic:""
+
+};
