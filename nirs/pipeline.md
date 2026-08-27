@@ -1,21 +1,6 @@
-# NIRS Pipeline
-
-Current structure:
-
-Raw BLE packets
-        |
-        v
-Optical intensity extraction
-        |
-        v
-Optical density
-        |
-        v
-Beer-Lambert conversion
-        |
-        v
-HbO / HbR / HbT
-        |
-        v
-SNIRF
-
+Raw frames
+-> Signal extraction
+-> Optical density
+-> Beer-Lambert
+-> HbO/HbR/HbT
+-> SNIRF

@@ -1,13 +1,8 @@
-# Setup v7
+# Setup v8
 
-1. Extract repository
-2. Open in VS Code
-3. Run using localhost or HTTPS
-4. Connect Bluetooth-enabled browser
+Open frontend/index.html with localhost or HTTPS.
 
 Git:
-
 git add .
-git commit -m "ANR Mendi Recorder v7 raw acquisition and export foundation"
+git commit -m "ANR Mendi Recorder v8 acquisition layer"
 git push
-

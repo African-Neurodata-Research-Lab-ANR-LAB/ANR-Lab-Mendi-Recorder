@@ -1,13 +1,9 @@
 export class PacketDecoder{
-
 decode(bytes){
-
 return {
 timestamp:new Date().toISOString(),
-length:bytes.length,
+size:bytes.length,
 raw:Array.from(bytes)
 };
-
 }
-
 }

@@ -1,6 +1,6 @@
 export const MENDI_CONFIG={
-namePrefix:"Mendi",
-serviceUUID:"",
-notifyUUID:"",
-writeUUID:""
+namePrefix:'Mendi',
+serviceUUID:'',
+notifyUUID:'',
+writeUUID:''
 };
