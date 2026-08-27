@@ -1,13 +1,27 @@
-NIRS pipeline:
+# NIRS Pipeline
 
-Raw packets
- |
-Intensity extraction
- |
+Mendi raw frames
+
+↓
+
+Decoded channels
+
+↓
+
+Optical intensity
+
+↓
+
 Optical density
- |
+
+↓
+
 Beer-Lambert
- |
-HbO/HbR/HbT
- |
+
+↓
+
+HbO / HbR / HbT
+
+↓
+
 SNIRF

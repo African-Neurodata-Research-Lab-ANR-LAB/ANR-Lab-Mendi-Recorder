@@ -1,9 +1,9 @@
 # Mendi Protocol Validation
 
-To complete:
+To fill after device testing:
 
-- Service UUID
-- Notification UUID
-- Packet frame format
-- Sensor channels
-
+- BLE services
+- characteristic UUIDs
+- frame headers
+- channel order
+- sampling rate
