@@ -1,16 +1,20 @@
-# Installation
+# v1.1 Setup
 
 Requirements:
-- Chrome/Edge browser
-- Bluetooth enabled device
-- Mendi hardware
+- Chrome or Edge
+- Bluetooth enabled computer
+- Mendi device
 
-Run locally:
+Workflow:
 
-Open app/index.html using localhost.
+1. Open scanner page
+2. Connect Mendi
+3. Discover services
+4. Start raw capture
+5. Export device information
 
-Development:
+Git:
 
 git add .
-git commit -m "message"
+git commit -m "ANR Mendi Recorder v1.1 hardware validation"
 git push
