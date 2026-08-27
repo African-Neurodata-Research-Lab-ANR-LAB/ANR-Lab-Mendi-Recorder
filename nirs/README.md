@@ -1,6 +1,6 @@
 NIRS pathway:
 
-Decoded signal
+Validated signal
 
 ↓
 

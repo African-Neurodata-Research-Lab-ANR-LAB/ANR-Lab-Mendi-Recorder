@@ -1,16 +1,15 @@
-# ANR Lab Mendi Recorder v1.4
-## Signal Decoder Phase
+# ANR Lab Mendi Recorder v1.5
+## Signal Validation Phase
 
 African Neurodata Research Lab (ANR Lab)
 
-v1.4 begins converting captured BLE packets into meaningful signal structures.
+v1.5 focuses on validating decoded Mendi signals using captured packets.
 
 Pipeline:
 
-Mendi BLE Packets
+Raw BLE Capture
  -> Packet Decoder
- -> Channel Extraction
- -> Signal Buffer
- -> Visualization
+ -> Channel Validation
+ -> Signal Quality Checks
+ -> Decoded Dataset
  -> NIRS Processing
-
