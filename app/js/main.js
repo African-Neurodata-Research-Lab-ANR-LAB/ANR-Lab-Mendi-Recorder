@@ -1,26 +1,13 @@
-import {SignalBuffer} from '../../core/signal/signal_buffer.js';
-import {QualityMonitor} from '../../core/signal/quality_monitor.js';
-import {LivePlot} from '../../core/visualization/live_plot.js';
-import {ExperimentMarker} from '../../core/markers/experiment_marker.js';
+import {DeviceMetadata} from '../../core/device/device_metadata.js';
+import {SessionQC} from '../../core/qc/session_qc.js';
 
-const buffer=new SignalBuffer();
-const quality=new QualityMonitor();
-const plot=new LivePlot();
-const marker=new ExperimentMarker();
+const metadata = new DeviceMetadata();
+const qc = new SessionQC();
 
-connect.onclick=()=>{
-status.innerText="Ready for Mendi stream";
+connect.onclick = ()=>{
+status.innerText="Ready for Mendi";
 };
 
-start.onclick=()=>{
-marker.add("START");
-};
-
-stop.onclick=()=>{
-marker.add("STOP");
-};
-
-marker.onclick=()=>{
-marker.add("EVENT");
-markers.innerHTML += "<p>Marker added</p>";
+marker.onclick = ()=>{
+markers.innerHTML += "<p>Marker recorded</p>";
 };

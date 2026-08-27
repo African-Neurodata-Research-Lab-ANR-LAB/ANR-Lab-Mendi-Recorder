@@ -1,20 +1,27 @@
-# ANR Lab Mendi Recorder v14
+# ANR Lab Mendi Recorder v15
 
 African Neurodata Research Lab (ANR Lab)
 University of Port Harcourt
 
-## v14: Research Data Processing Preparation
+## v15: Complete Research Session Workflow Foundation
 
-v14 focuses on making acquired data ready for neuroscience analysis.
+v15 focuses on producing a structured research dataset from acquisition.
 
-Pipeline:
+Workflow:
 
 Mendi Device
- -> BLE Stream
+ -> BLE Acquisition
  -> Decoder
- -> Raw Session
- -> CSV/JSON Export
- -> Signal QC
+ -> Recorder
+ -> Session Package
+ -> Quality Control
  -> NIRS Processing
- -> SNIRF
 
+Session output:
+
+ANR_Mendi_Session.zip
+- raw_packets.csv
+- metadata.json
+- markers.csv
+- device.json
+- README.txt

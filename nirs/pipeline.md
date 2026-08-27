@@ -1,15 +1,24 @@
-NIRS pipeline:
+NIRS Processing Pipeline
 
-Raw Mendi frames
-|
-Decoded channels
-|
-Signal QC
-|
+Raw Mendi session
+
+↓
+
+Quality Control
+
+↓
+
 Optical intensity
-|
+
+↓
+
 Optical density
-|
+
+↓
+
 HbO/HbR/HbT
-|
+
+↓
+
 SNIRF
+
