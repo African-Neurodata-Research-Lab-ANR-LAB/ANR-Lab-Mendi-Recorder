@@ -1,16 +1,18 @@
-# ANR Lab Mendi Recorder v1.7
-## Live Decoded Signal Display Phase
+# ANR Lab Mendi Recorder v1.8
+## Complete Acquisition Workflow
 
 African Neurodata Research Lab (ANR Lab)
 
-v1.7 introduces the live monitoring layer after packet mapping.
+v1.8 combines the acquisition components into a complete research workflow.
 
 Pipeline:
 
 Mendi Device
- -> BLE Stream
+ -> BLE Connection
+ -> Packet Capture
  -> Decoder
- -> Channel Reconstruction
- -> Live Signal Display
- -> Session Recording
+ -> Live Dashboard
+ -> Markers
+ -> Session Recorder
+ -> Research Export
  -> NIRS Pipeline

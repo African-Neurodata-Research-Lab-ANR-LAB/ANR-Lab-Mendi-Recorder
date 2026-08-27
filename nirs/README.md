@@ -1,14 +1,18 @@
-Future pathway:
+NIRS workflow:
 
-Live decoded signal
-
-↓
-
-Optical intensity
+Decoded signal
 
 ↓
 
-Optical density
+Quality Control
+
+↓
+
+Optical Intensity
+
+↓
+
+Optical Density
 
 ↓
 
