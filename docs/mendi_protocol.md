@@ -1,10 +1,18 @@
-# Mendi Protocol
+# Mendi Protocol Capture
 
-Document:
+Hardware validation notes.
 
-- BLE services
-- Characteristics
-- Packet formats
-- Sampling information
+Device:
+Mendi
 
-Validated values will be added after hardware testing.
+Service UUID:
+
+Notify UUID:
+
+Packet Length:
+
+Sampling Rate:
+
+Channel Mapping:
+
+Packet observations:

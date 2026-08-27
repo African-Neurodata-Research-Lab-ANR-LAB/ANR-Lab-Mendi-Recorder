@@ -1,11 +1,14 @@
-# ANR Lab Mendi Recorder v1.2.1
-## BLE Explorer Pro
+# ANR Lab Mendi Recorder v1.3
+## Packet Capture and Decoder Phase
 
-Improvement over v1.2.
+Purpose:
+Capture and analyze real BLE notification packets from the Mendi device.
 
-Adds:
-- characteristic inspection
-- notification capture controls
-- raw packet export preparation
-- improved device profiling
+Pipeline:
 
+Mendi
+ -> BLE Notification
+ -> Raw Packet Capture
+ -> Packet Analyzer
+ -> Decoder
+ -> Research Dataset
