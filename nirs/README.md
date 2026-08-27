@@ -1,6 +1,6 @@
-NIRS pathway:
+Future pathway:
 
-Mapped signal
+Live decoded signal
 
 ↓
 
