@@ -1,21 +1,8 @@
-# ANR Mendi Session Format
-
-Future ZIP:
+# Session Format
 
 ANR_Mendi_Session.zip
 
-/raw
- - raw_packets.csv
-
-/metadata
- - metadata.json
- - device_info.json
-
-/events
- - markers.csv
-
-Future:
-/nirs
- - intensity.csv
- - HbO.csv
- - HbR.csv
+- raw packets
+- metadata
+- markers
+- device information

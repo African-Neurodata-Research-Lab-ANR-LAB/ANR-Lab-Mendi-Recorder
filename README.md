@@ -1,24 +1,25 @@
-# ANR Lab Mendi Recorder v9
+# ANR Lab Mendi Recorder v1.0
 
 African Neurodata Research Lab (ANR Lab)
 University of Port Harcourt
 
-## v9: Research Session Export Layer
+A browser-based research recorder architecture for Mendi neurotechnology devices.
 
-v9 introduces:
+## Platform Goals
 
-- session packaging architecture
-- metadata capture
-- raw packet storage format
-- marker storage
-- device information storage
-- analysis-ready session structure
+- BLE acquisition
+- Real-time signal monitoring
+- Automated event markers
+- Research session recording
+- NIRS processing pipeline
+- SNIRF-compatible analysis workflow
 
-Pipeline:
+## Architecture
 
 Mendi Device
- -> BLE Stream
- -> Packet Decoder
- -> Session Recorder
- -> ANR_Mendi_Session.zip
- -> NIRS Processing
+-> BLE Layer
+-> Decoder
+-> Recorder
+-> Export
+-> NIRS Pipeline
+-> Analyzer

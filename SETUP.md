@@ -1,12 +1,12 @@
-# Setup v9
+# Setup Guide
 
-1. Extract repository.
-2. Open with VS Code.
-3. Run using localhost or HTTPS.
-4. Connect Mendi device.
+1. Clone repository
+2. Open in VS Code
+3. Run through localhost or HTTPS
+4. Connect Bluetooth-enabled browser
 
-Git:
+Development workflow:
 
 git add .
-git commit -m "ANR Mendi Recorder v9 research session export layer"
+git commit -m "message"
 git push
