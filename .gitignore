@@ -1,2 +1,13 @@
+﻿node_modules/
+dist/
+.env
+*.log
 sessions/
-*.zip
+*.snirf
+*.edf
+*.xdf
+*.csv
+*.tsv
+*.jsonl
+.DS_Store
+Thumbs.db

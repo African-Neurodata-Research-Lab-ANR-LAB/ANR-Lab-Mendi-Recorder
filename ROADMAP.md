@@ -1,13 +1,11 @@
 # Roadmap
 
-## v1.0
-Production repository structure
+## Recorder
+- Complete physical Mendi V4 stream validation
+- Complete validated packet field mapping
+- Complete reconnect testing
+- Complete browser deployment testing
+- Complete research-session export testing
 
-## v1.1
-Hardware validation
-
-## v1.2
-Signal processing pipeline
-
-## v2.0
-Complete research platform
+## Analyzer
+A separate repository will be created after the Recorder is stable.

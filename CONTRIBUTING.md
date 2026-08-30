@@ -1,8 +1,12 @@
 # Contributing
 
-Contributions should maintain:
+Keep the Recorder and Analyzer separate.
 
-- research reproducibility
-- clear documentation
-- tested code
-- transparent changes
+Never:
+- invent undocumented Mendi commands;
+- fabricate sampling rates;
+- fabricate optode geometry;
+- label unknown data as HbO/HbR;
+- commit participant-identifying data.
+
+All protocol changes must include a hardware-validation note and tests where applicable.

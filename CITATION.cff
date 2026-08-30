@@ -1,7 +1,7 @@
 cff-version: 1.2.0
-title: ANR Lab Mendi Recorder
+title: "ANR Lab Mendi Recorder"
+message: "If you use this software in research, please cite the project."
+type: software
 authors:
-  - family-names: Duruh
-    given-names: Joseph
-version: 1.0.0
-date-released: 2026-08-27
+  - name: "African Neurodata Research Lab"
+repository-code: "https://github.com/African-Neurodata-Research-Lab-ANR-LAB/ANR-Lab-Mendi-Recorder"

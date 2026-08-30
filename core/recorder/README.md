@@ -1,3 +1,0 @@
-# Recorder Layer
-
-Session management.

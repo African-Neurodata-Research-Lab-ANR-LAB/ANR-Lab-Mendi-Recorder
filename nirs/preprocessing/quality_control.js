@@ -1,1 +1,0 @@
-// Signal quality control

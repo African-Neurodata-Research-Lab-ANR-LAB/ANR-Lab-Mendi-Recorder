@@ -1,1 +1,0 @@
-// SNIRF export module
