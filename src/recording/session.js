@@ -26,8 +26,12 @@ export class Session {
 
   appendRaw(packet) {
     if (this.status !== "recording") return;
+
+    const timestampMs = packet.timestampMs ?? packet.receivedAtMs;
+
     this.raw.append({
       ...packet,
+      timestampMs,
       timeS: this.clock.nowSeconds()
     });
   }
@@ -50,12 +54,14 @@ export class Session {
 
   stop() {
     if (this.status !== "recording") return;
+
     this.markers.add({
       onset: this.clock.nowSeconds(),
       duration: 0,
       description: "STOP_RECORDING",
       source: "system"
     });
+
     this.status = "stopped";
   }
 

@@ -1,4 +1,5 @@
 import { createState } from "./state.js";
+import { startAcquisition } from "./acquisition.js";
 import { MendiDriver } from "../ble/mendi-driver.js";
 import { Session } from "../recording/session.js";
 import { CheckpointStore } from "../recording/checkpoint-store.js";
@@ -29,7 +30,7 @@ function render() {
   markerList.innerHTML = "";
   for (const marker of session.markers.all().slice(-10).reverse()) {
     const item = document.createElement("li");
-    item.textContent = `${marker.onset.toFixed?.(3) ?? marker.onset}s â€” ${marker.description}`;
+    item.textContent = `${marker.onset.toFixed?.(3) ?? marker.onset}s - ${marker.description}`;
     markerList.appendChild(item);
   }
 }
@@ -87,14 +88,21 @@ root.querySelector("#start").onclick = async () => {
   };
 
   try {
-    await driver.subscribe("ABB1", onPacket);
-    await driver.subscribe("ABB4", onPacket);
-    await driver.subscribe("ABB5", onPacket);
+    await startAcquisition(driver, onPacket, {
+      onFailure: (error) => {
+        state.recording = "idle";
+        state.error = error.message;
+        session.stop();
+        checkpoint.save(session.snapshot());
+      }
+    });
+
     state.quality = "REVIEW";
     render();
   } catch (error) {
     state.error = error.message;
     alert(error.message);
+    render();
   }
 };
 
