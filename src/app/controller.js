@@ -1,5 +1,5 @@
 import { createState } from "./state.js";
-import { startAcquisition } from "./acquisition.js";
+import { startAcquisition, stopAcquisition } from "./acquisition.js";
 import { MendiDriver } from "../ble/mendi-driver.js";
 import { Session } from "../recording/session.js";
 import { CheckpointStore } from "../recording/checkpoint-store.js";
@@ -106,7 +106,14 @@ root.querySelector("#start").onclick = async () => {
   }
 };
 
-root.querySelector("#stop").onclick = () => {
+root.querySelector("#stop").onclick = async () => {
+  try {
+    await stopAcquisition(driver);
+  } catch (error) {
+    state.error = error.message;
+    alert(error.message);
+  }
+
   session.stop();
   state.recording = "stopped";
   checkpoint.save(session.snapshot());
