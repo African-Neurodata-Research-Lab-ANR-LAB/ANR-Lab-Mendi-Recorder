@@ -1,5 +1,5 @@
 import { createState } from "./state.js";
-import { startAcquisition, stopAcquisition } from "./acquisition.js";
+import { startAcquisition, stopAcquisition, handleAcquisitionDisconnect } from "./acquisition.js";
 import { MendiDriver } from "../ble/mendi-driver.js";
 import { Session } from "../recording/session.js";
 import { CheckpointStore } from "../recording/checkpoint-store.js";
@@ -147,13 +147,35 @@ root.querySelector("#marker").onclick = () => {
   render();
 };
 
-driver.onDisconnected = () => {
-  state.connection = "disconnected";
-  if (state.recording === "recording") {
-    session.addMarker("DEVICE_DISCONNECTED", "system");
-    checkpoint.save(session.snapshot());
+driver.onDisconnected = async () => {
+  try {
+    await handleAcquisitionDisconnect(driver, {
+      onDisconnected: () => {
+        state.connection = "disconnected";
+
+        if (state.recording === "recording") {
+          session.addMarker("DEVICE_DISCONNECTED", "system");
+          session.stop();
+          state.recording = "idle";
+          checkpoint.save(session.snapshot());
+        }
+
+        render();
+      }
+    });
+  } catch (error) {
+    state.connection = "disconnected";
+    state.error = error.message;
+
+    if (state.recording === "recording") {
+      session.addMarker("DEVICE_DISCONNECTED", "system");
+      session.stop();
+      state.recording = "idle";
+      checkpoint.save(session.snapshot());
+    }
+
+    render();
   }
-  render();
 };
 
 render();

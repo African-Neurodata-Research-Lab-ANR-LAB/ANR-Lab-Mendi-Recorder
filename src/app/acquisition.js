@@ -1,4 +1,4 @@
-const ACQUISITION_KEYS = ["ABB1", "ABB4", "ABB5"];
+﻿const ACQUISITION_KEYS = ["ABB1", "ABB4", "ABB5"];
 const activeAcquisitions = new WeakMap();
 
 export async function startAcquisition(driver, onPacket, options = {}) {
@@ -43,4 +43,9 @@ export async function stopAcquisition(driver) {
   if (firstError) {
     throw firstError;
   }
+}
+
+export async function handleAcquisitionDisconnect(driver, options = {}) {
+  await stopAcquisition(driver);
+  options.onDisconnected?.();
 }
