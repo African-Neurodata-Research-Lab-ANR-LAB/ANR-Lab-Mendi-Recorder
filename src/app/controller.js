@@ -70,10 +70,6 @@ root.querySelector("#start").onclick = async () => {
     return;
   }
 
-  session = new Session();
-  session.start(preparedMetadata);
-  state.recording = "recording";
-
   const onPacket = (packet) => {
     session.appendRaw(packet);
     state.packetCount = session.raw.count();
@@ -88,15 +84,20 @@ root.querySelector("#start").onclick = async () => {
   };
 
   try {
-    await startAcquisition(driver, onPacket, {
+    const started = await startAcquisition(driver, onPacket, {
       onFailure: (error) => {
-        state.recording = "idle";
         state.error = error.message;
-        session.stop();
-        checkpoint.save(session.snapshot());
+        render();
       }
     });
 
+    if (!started) {
+      return;
+    }
+
+    session = new Session();
+    session.start(preparedMetadata);
+    state.recording = "recording";
     state.quality = "REVIEW";
     render();
   } catch (error) {

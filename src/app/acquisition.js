@@ -1,7 +1,11 @@
-﻿const ACQUISITION_KEYS = ["ABB1", "ABB4", "ABB5"];
+const ACQUISITION_KEYS = ["ABB1", "ABB4", "ABB5"];
 const activeAcquisitions = new WeakMap();
 
 export async function startAcquisition(driver, onPacket, options = {}) {
+  if (activeAcquisitions.has(driver)) {
+    return false;
+  }
+
   const subscribed = [];
 
   try {
@@ -11,6 +15,7 @@ export async function startAcquisition(driver, onPacket, options = {}) {
     }
 
     activeAcquisitions.set(driver, [...subscribed]);
+    return true;
   } catch (error) {
     for (const key of subscribed.reverse()) {
       try {
