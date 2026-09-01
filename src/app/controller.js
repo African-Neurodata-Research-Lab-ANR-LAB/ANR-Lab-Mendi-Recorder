@@ -4,6 +4,7 @@ import { MendiDriver } from "../ble/mendi-driver.js";
 import { Session } from "../recording/session.js";
 import { CheckpointStore } from "../recording/checkpoint-store.js";
 import { decodeFrame } from "../protocol/frame-decoder.js";
+import { isMendiCharacteristic } from "../ble/characteristic-utils.js";
 import { rawPacketsCsv } from "../export/csv.js";
 import { eventsTsv } from "../export/tsv.js";
 import { buildMetadata } from "../export/metadata.js";
@@ -75,7 +76,7 @@ root.querySelector("#start").onclick = async () => {
     state.packetCount = session.raw.count();
     checkpoint.save(session.snapshot());
 
-    if (packet.characteristicUuid.toLowerCase().endsWith("abb1")) {
+    if (isMendiCharacteristic(packet.characteristicUuid, "ABB1")) {
       const decoded = decodeFrame(packet.bytes);
       session.appendDecoded(decoded);
     }
