@@ -54,10 +54,66 @@ let session = new Session();
 let preparedMetadata = null;
 
 
+// Live monitor elapsed timer
+let monitorTimer = null;
+let monitorStartTime = null;
+
+
 state.browserSupport =
   navigator.bluetooth
     ? "supported"
     : "unsupported";
+function startMonitorTimer() {
+
+  if (monitorTimer) {
+    return;
+  }
+
+
+  monitorStartTime = Date.now();
+
+
+  monitorTimer = setInterval(() => {
+
+
+    if (state.recording !== "recording") {
+      return;
+    }
+
+
+    state.monitor.elapsedSeconds =
+      Math.floor(
+        (Date.now() - monitorStartTime) / 1000
+      );
+
+
+    render();
+
+
+  }, 1000);
+
+}
+
+
+
+function stopMonitorTimer() {
+
+
+  if (monitorTimer) {
+
+    clearInterval(
+      monitorTimer
+    );
+
+
+    monitorTimer = null;
+
+  }
+
+
+  monitorStartTime = null;
+
+}
 
 
 
@@ -345,11 +401,14 @@ async ()=>{
 
 
     state.recording =
-      "recording";
+  "recording";
 
 
-    state.quality =
-      "REVIEW";
+startMonitorTimer();
+
+
+state.quality =
+  "REVIEW";
 
 
     render();
@@ -405,8 +464,11 @@ async ()=>{
   session.stop();
 
 
-  state.recording =
-    "stopped";
+stopMonitorTimer();
+
+
+state.recording =
+  "stopped";
 
 
   checkpoint.save(
