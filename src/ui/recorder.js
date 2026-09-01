@@ -41,11 +41,116 @@ export function recorderMarkup() {
         <div><span>Battery</span><strong data-battery>â€”</strong></div>
       </section>
 
-      <section class="panel">
-        <h2>Live Technical Monitor</h2>
-        <p>This display is technical monitoring only. It does not estimate neural activation, cognition, or clinical state.</p>
-        <canvas id="trace" width="1000" height="260" aria-label="Technical signal trace"></canvas>
-      </section>
+      <section class="panel technical-monitor">
+  <h2>Live Technical Monitor</h2>
+
+  <p class="warning">
+    Technical monitoring only. Values represent device communication,
+    signal quality, and acquisition status. This system does not estimate
+    neural activation, cognition, diagnosis, or clinical state.
+  </p>
+
+  <div class="monitor-grid">
+
+    <div class="monitor-card">
+      <span>Elapsed Time</span>
+      <strong data-monitor-elapsed>0</strong>
+      <small>seconds</small>
+    </div>
+
+    <div class="monitor-card">
+      <span>Packet Rate</span>
+      <strong data-monitor-rate>0</strong>
+      <small>Hz</small>
+    </div>
+
+    <div class="monitor-card">
+      <span>Signal Quality</span>
+      <strong data-monitor-signal>NO SIGNAL</strong>
+    </div>
+
+    <div class="monitor-card">
+      <span>Left Contact</span>
+      <strong data-monitor-left-contact>
+        unknown
+      </strong>
+    </div>
+
+    <div class="monitor-card">
+      <span>Right Contact</span>
+      <strong data-monitor-right-contact>
+        unknown
+      </strong>
+    </div>
+
+  </div>
+
+
+  <h3>Optical Channel Packet Monitor</h3>
+
+  <div class="channel-grid">
+
+    <div class="channel-card">
+      <span>ABB1</span>
+      <strong data-monitor-abb1>0</strong>
+    </div>
+
+    <div class="channel-card">
+      <span>ABB4</span>
+      <strong data-monitor-abb4>0</strong>
+    </div>
+
+    <div class="channel-card">
+      <span>ABB5</span>
+      <strong data-monitor-abb5>0</strong>
+    </div>
+
+    <div class="channel-card">
+      <span>Unknown</span>
+      <strong data-monitor-unknown>0</strong>
+    </div>
+
+  </div>
+
+
+  <h3>Hardware Status</h3>
+
+  <div class="hardware-grid">
+
+    <div class="monitor-card">
+      <span>IMU</span>
+      <strong data-monitor-imu>
+        NOT AVAILABLE
+      </strong>
+    </div>
+
+
+    <div class="monitor-card">
+      <span>AutoMarker</span>
+      <strong data-monitor-automarker>
+        DISABLED
+      </strong>
+    </div>
+
+
+    <div class="monitor-card">
+      <span>Last Event</span>
+      <strong data-monitor-last-event>
+        NONE
+      </strong>
+    </div>
+
+  </div>
+
+
+  <canvas
+    id="trace"
+    width="1000"
+    height="260"
+    aria-label="Technical signal trace">
+  </canvas>
+
+</section>
 
       <section class="panel">
         <h2>Recent Markers</h2>
