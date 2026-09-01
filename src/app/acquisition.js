@@ -1,4 +1,4 @@
-const ACQUISITION_KEYS = ["ABB1", "ABB4", "ABB5"];
+﻿const ACQUISITION_KEYS = ["ABB1", "ABB4", "ABB5"];
 const activeAcquisitions = new WeakMap();
 
 export async function startAcquisition(driver, onPacket, options = {}) {
@@ -9,15 +9,23 @@ export async function startAcquisition(driver, onPacket, options = {}) {
   const subscribed = [];
   activeAcquisitions.set(driver, subscribed);
 
+  const handlePacket = options.packetInspector
+    ? (packet) => {
+        options.packetInspector.record(packet);
+        onPacket(packet);
+      }
+    : onPacket;
+
   try {
     for (const key of ACQUISITION_KEYS) {
-      await driver.subscribe(key, onPacket);
+      await driver.subscribe(key, handlePacket);
       subscribed.push(key);
     }
 
     return true;
   } catch (error) {
     activeAcquisitions.delete(driver);
+
     for (const key of subscribed.reverse()) {
       try {
         await driver.unsubscribe(key);
