@@ -1,27 +1,66 @@
 export function renderDashboard(root, state) {
   if (!root) return;
 
-  root.querySelector("[data-status]").textContent = state.connection;
-  root.querySelector("[data-recording]").textContent = state.recording;
-  root.querySelector("[data-packets]").textContent = String(state.packetCount);
-  root.querySelector("[data-quality]").textContent = state.quality;
+  const setText = (selector, value) => {
+    const element = root.querySelector(selector);
 
-  const monitor = state.monitor;
+    if (element) {
+      element.textContent = String(value);
+    }
+  };
 
-  if (!monitor) return;
+  setText("[data-status]", state.connection);
+  setText("[data-recording]", state.recording);
+  setText("[data-packets]", state.packetCount);
+  setText("[data-quality]", state.quality);
 
-  root.querySelector("[data-monitor-elapsed]").textContent =
-    String(monitor.elapsedSeconds);
+  const monitor = state.monitor ?? {};
 
-  root.querySelector("[data-monitor-rate]").textContent =
-    String(monitor.packetRateHz);
+  setText("[data-monitor-elapsed]", monitor.elapsedSeconds ?? 0);
+  setText("[data-monitor-rate]", monitor.packetRateHz ?? 0);
+  setText("[data-monitor-signal]", monitor.signalQuality ?? "NO SIGNAL");
 
-  root.querySelector("[data-monitor-signal]").textContent =
-    monitor.signalQuality;
+  const contact = monitor.contact ?? {};
 
-  root.querySelector("[data-monitor-left-contact]").textContent =
-    monitor.contact.left;
+  setText(
+    "[data-monitor-left-contact]",
+    contact.left ?? "unknown"
+  );
 
-  root.querySelector("[data-monitor-right-contact]").textContent =
-    monitor.contact.right;
+  setText(
+    "[data-monitor-right-contact]",
+    contact.right ?? "unknown"
+  );
+
+  const channels = monitor.channels ?? {};
+
+  setText("[data-monitor-abb1]", channels.ABB1 ?? 0);
+  setText("[data-monitor-abb4]", channels.ABB4 ?? 0);
+  setText("[data-monitor-abb5]", channels.ABB5 ?? 0);
+  setText("[data-monitor-unknown]", channels.unknown ?? 0);
+
+  const imu = monitor.imu ?? {
+    enabled: true,
+    status: "NOT AVAILABLE"
+  };
+
+  setText(
+    "[data-monitor-imu]",
+    imu.enabled ? imu.status : "DISABLED"
+  );
+
+  const automarker = monitor.automarker ?? {
+    enabled: true,
+    lastEvent: null
+  };
+
+  setText(
+    "[data-monitor-automarker]",
+    automarker.enabled ? "ENABLED" : "DISABLED"
+  );
+
+  setText(
+    "[data-monitor-last-event]",
+    automarker.lastEvent ?? "NONE"
+  );
 }
