@@ -7,6 +7,7 @@ export async function startAcquisition(driver, onPacket, options = {}) {
   }
 
   const subscribed = [];
+  activeAcquisitions.set(driver, subscribed);
 
   try {
     for (const key of ACQUISITION_KEYS) {
@@ -14,9 +15,9 @@ export async function startAcquisition(driver, onPacket, options = {}) {
       subscribed.push(key);
     }
 
-    activeAcquisitions.set(driver, [...subscribed]);
     return true;
   } catch (error) {
+    activeAcquisitions.delete(driver);
     for (const key of subscribed.reverse()) {
       try {
         await driver.unsubscribe(key);
