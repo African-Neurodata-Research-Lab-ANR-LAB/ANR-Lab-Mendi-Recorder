@@ -30,6 +30,9 @@ import { renderDashboard } from "../visualization/dashboard.js";
 import {
   createPacketInspectionState
 } from "./packet-inspection-state.js";
+import { LiveTraceBuffer } from "../visualization/live-trace-buffer.js";
+import { extractOpticalSample } from "../protocol/optical-extractor.js";
+import { renderTrace } from "../visualization/trace-renderer.js";
 
 
 const root = document.querySelector("#app");
@@ -47,6 +50,9 @@ const packetInspector = new PacketInspector();
 
 const packetInspectionState =
   createPacketInspectionState(packetInspector);
+
+const traceBuffer = new LiveTraceBuffer(500);
+
 
 
 let session = new Session();
@@ -339,14 +345,26 @@ async ()=>{
     ){
 
       const decoded =
-        decodeFrame(
-          packet.bytes
-        );
+  decodeFrame(packet.bytes);
 
+session.appendDecoded(decoded);
 
-      session.appendDecoded(
-        decoded
-      );
+const opticalSample =
+  extractOpticalSample(decoded);
+
+if (opticalSample) {
+  traceBuffer.push(opticalSample);
+
+  const canvas =
+    root.querySelector("#trace");
+
+  if (canvas) {
+    renderTrace(
+      canvas,
+      traceBuffer.get()
+    );
+  }
+}
 
     }
 
