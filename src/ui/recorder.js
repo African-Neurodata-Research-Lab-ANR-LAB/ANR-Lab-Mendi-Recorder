@@ -1,11 +1,11 @@
-export function recorderMarkup() {
+﻿export function recorderMarkup() {
   return `
     <main class="shell">
       <header>
         <div>
           <p class="eyebrow">AFRICAN NEURODATA RESEARCH LAB</p>
           <h1>ANR Lab Mendi Recorder</h1>
-          <p>Research acquisition only Â· raw-first Â· local processing</p>
+          <p>Research acquisition only Ã‚Â· raw-first Ã‚Â· local processing</p>
         </div>
         <div class="status-card">
           <span>Device</span>
@@ -19,7 +19,141 @@ export function recorderMarkup() {
           <div class="grid">
             <label>Participant Code<input name="participantCode" autocomplete="off" required></label>
             <label>Session Code<input name="sessionCode" autocomplete="off" required></label>
-            <label>Protocol<input name="protocol" required></label>
+                        <div class="protocol-builder">
+              <h3>Protocol Builder</h3>
+
+              <div
+                data-protocol-phase
+                data-phase-id="phase-1"
+              >
+                <input
+                  data-phase-name
+                  value="Baseline"
+                  aria-label="Phase name"
+                >
+
+                <select
+                  data-phase-type
+                  aria-label="Phase type"
+                >
+                  <option
+                    value="baseline"
+                    selected
+                  >
+                    Baseline
+                  </option>
+                  <option value="get_ready">
+                    Get Ready
+                  </option>
+                  <option value="task">
+                    Task
+                  </option>
+                  <option value="rest">
+                    Rest
+                  </option>
+                  <option value="custom">
+                    Custom
+                  </option>
+                </select>
+
+                <input
+                  data-phase-duration
+                  type="number"
+                  min="1"
+                  value="30"
+                  aria-label="Duration seconds"
+                >
+
+                <label>
+                  AutoMarker
+                  <input
+                    type="checkbox"
+                    data-phase-automarker
+                    checked
+                  >
+                </label>
+              </div>
+
+              <div
+                data-protocol-phase
+                data-phase-id="phase-2"
+              >
+                <input
+                  data-phase-name
+                  value="Task"
+                  aria-label="Phase name"
+                >
+
+                <select
+                  data-phase-type
+                  aria-label="Phase type"
+                >
+                  <option value="baseline">
+                    Baseline
+                  </option>
+                  <option value="get_ready">
+                    Get Ready
+                  </option>
+                  <option
+                    value="task"
+                    selected
+                  >
+                    Task
+                  </option>
+                  <option value="rest">
+                    Rest
+                  </option>
+                  <option value="custom">
+                    Custom
+                  </option>
+                </select>
+
+                <input
+                  data-phase-duration
+                  type="number"
+                  min="1"
+                  value="60"
+                  aria-label="Duration seconds"
+                >
+
+                <label>
+                  AutoMarker
+                  <input
+                    type="checkbox"
+                    data-phase-automarker
+                    checked
+                  >
+                </label>
+              </div>
+
+              <label>
+                Repeat Count
+                <input
+                  name="repeatCount"
+                  type="number"
+                  min="1"
+                  value="1"
+                >
+              </label>
+
+              <label>
+                Global AutoMarker
+                <input
+                  type="checkbox"
+                  name="autoMarkerEnabled"
+                >
+              </label>
+
+              <label>
+                AutoMarker Interval (seconds)
+                <input
+                  name="autoMarkerIntervalSeconds"
+                  type="number"
+                  min="1"
+                  value="5"
+                >
+              </label>
+            </div>
             <label>IMU<input type="checkbox" name="imuEnabled" checked></label>
           </div>
           <label>Notes<textarea name="notes"></textarea></label>
@@ -38,7 +172,7 @@ export function recorderMarkup() {
         <div><span>Recording</span><strong data-recording>idle</strong></div>
         <div><span>Packets</span><strong data-packets>0</strong></div>
         <div><span>Quality</span><strong data-quality>NO SIGNAL</strong></div>
-        <div><span>Battery</span><strong data-battery>â€”</strong></div>
+        <div><span>Battery</span><strong data-battery>Ã¢â‚¬â€</strong></div>
       </section>
 
       <section class="panel technical-monitor">
@@ -158,7 +292,8 @@ export function recorderMarkup() {
       </section>
 
       <section id="recovery"></section>
-      <footer>ANR Lab Â· Research use only Â· Recorder and Analyzer are separate systems</footer>
+      <footer>ANR Lab Ã‚Â· Research use only Ã‚Â· Recorder and Analyzer are separate systems</footer>
     </main>
   `;
 }
+
