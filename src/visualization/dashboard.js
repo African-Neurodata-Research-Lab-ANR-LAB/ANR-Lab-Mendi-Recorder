@@ -1,3 +1,53 @@
+﻿function formatClock(value) {
+  const totalSeconds = Math.max(
+    0,
+    Math.floor(Number(value) || 0)
+  );
+
+  const hours = Math.floor(
+    totalSeconds / 3600
+  );
+
+  const minutes = Math.floor(
+    (totalSeconds % 3600) / 60
+  );
+
+  const seconds =
+    totalSeconds % 60;
+
+  return [
+    hours,
+    minutes,
+    seconds
+  ]
+    .map(value =>
+      String(value).padStart(2, "0")
+    )
+    .join(":");
+}
+
+function formatCountdown(value) {
+  const totalSeconds = Math.max(
+    0,
+    Math.floor(Number(value) || 0)
+  );
+
+  const minutes = Math.floor(
+    totalSeconds / 60
+  );
+
+  const seconds =
+    totalSeconds % 60;
+
+  return [
+    minutes,
+    seconds
+  ]
+    .map(value =>
+      String(value).padStart(2, "0")
+    )
+    .join(":");
+}
 export function renderDashboard(root, state) {
   if (!root) return;
 
@@ -14,6 +64,55 @@ export function renderDashboard(root, state) {
   setText("[data-packets]", state.packetCount);
   setText("[data-quality]", state.quality);
 
+  const experiment =
+    state.experiment ?? {};
+
+  setText(
+    "[data-session-clock]",
+    formatClock(experiment.sessionSeconds)
+  );
+
+  setText(
+    "[data-protocol-clock]",
+    formatClock(experiment.protocolSeconds)
+  );
+
+  setText(
+    "[data-session-status]",
+    state.sessionStatus ?? "idle"
+  );
+
+  setText(
+    "[data-current-phase]",
+    experiment.phaseName ?? "-"
+  );
+
+  setText(
+    "[data-phase-type]",
+    experiment.phaseType ?? "-"
+  );
+
+  setText(
+    "[data-phase-remaining]",
+    formatCountdown(
+      experiment.phaseRemainingSeconds
+    )
+  );
+
+  setText(
+    "[data-current-cycle]",
+    experiment.cycle ?? "-"
+  );
+
+  setText(
+    "[data-total-cycles]",
+    experiment.totalCycles ?? "-"
+  );
+
+  setText(
+    "[data-next-phase]",
+    experiment.nextPhaseName ?? "-"
+  );
   const monitor = state.monitor ?? {};
 
   setText("[data-monitor-elapsed]", monitor.elapsedSeconds ?? 0);
@@ -64,3 +163,5 @@ export function renderDashboard(root, state) {
     automarker.lastEvent ?? "NONE"
   );
 }
+
+

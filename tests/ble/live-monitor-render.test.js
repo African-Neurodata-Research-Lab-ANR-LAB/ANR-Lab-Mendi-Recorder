@@ -140,3 +140,71 @@ describe("live technical monitor rendering", () => {
     );
   });
 });
+
+it("renders Session and Protocol clocks with active phase context", () => {
+  const root = document.createElement("div");
+
+  root.innerHTML = `
+    <div data-session-clock></div>
+    <div data-protocol-clock></div>
+    <div data-session-status></div>
+    <div data-current-phase></div>
+    <div data-phase-type></div>
+    <div data-phase-remaining></div>
+    <div data-current-cycle></div>
+    <div data-total-cycles></div>
+    <div data-next-phase></div>
+  `;
+
+  const state = {
+    sessionStatus: "recording",
+    experiment: {
+      sessionSeconds: 272,
+      protocolSeconds: 231,
+      phaseName: "Task",
+      phaseType: "task",
+      phaseRemainingSeconds: 37,
+      cycle: 2,
+      totalCycles: 3,
+      nextPhaseName: "Rest"
+    }
+  };
+
+  renderDashboard(root, state);
+
+  expect(
+    root.querySelector("[data-session-clock]").textContent
+  ).toBe("00:04:32");
+
+  expect(
+    root.querySelector("[data-protocol-clock]").textContent
+  ).toBe("00:03:51");
+
+  expect(
+    root.querySelector("[data-session-status]").textContent
+  ).toBe("recording");
+
+  expect(
+    root.querySelector("[data-current-phase]").textContent
+  ).toBe("Task");
+
+  expect(
+    root.querySelector("[data-phase-type]").textContent
+  ).toBe("task");
+
+  expect(
+    root.querySelector("[data-phase-remaining]").textContent
+  ).toBe("00:37");
+
+  expect(
+    root.querySelector("[data-current-cycle]").textContent
+  ).toBe("2");
+
+  expect(
+    root.querySelector("[data-total-cycles]").textContent
+  ).toBe("3");
+
+  expect(
+    root.querySelector("[data-next-phase]").textContent
+  ).toBe("Rest");
+});
