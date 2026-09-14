@@ -72,6 +72,32 @@
                     checked
                   >
                 </label>
+
+                <div class="phase-actions">
+                  <button
+                    type="button"
+                    data-phase-up
+                    aria-label="Move phase up"
+                  >
+                    Move Up
+                  </button>
+
+                  <button
+                    type="button"
+                    data-phase-down
+                    aria-label="Move phase down"
+                  >
+                    Move Down
+                  </button>
+
+                  <button
+                    type="button"
+                    data-phase-remove
+                    aria-label="Remove phase"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
 
               <div
@@ -124,7 +150,40 @@
                     checked
                   >
                 </label>
+
+                <div class="phase-actions">
+                  <button
+                    type="button"
+                    data-phase-up
+                    aria-label="Move phase up"
+                  >
+                    Move Up
+                  </button>
+
+                  <button
+                    type="button"
+                    data-phase-down
+                    aria-label="Move phase down"
+                  >
+                    Move Down
+                  </button>
+
+                  <button
+                    type="button"
+                    data-phase-remove
+                    aria-label="Remove phase"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
+
+              <button
+                type="button"
+                id="add-phase"
+              >
+                Add Phase
+              </button>
 
               <label>
                 Repeat Count
@@ -296,4 +355,5 @@
     </main>
   `;
 }
+
 
