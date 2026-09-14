@@ -17,7 +17,10 @@
     status: "NOT AVAILABLE"
   },
   automarker: {
-    enabled: true,
+    enabled: false,
+    active: false,
+    intervalSeconds: null,
+    nextAtSeconds: null,
     lastEvent: null
   }
 });

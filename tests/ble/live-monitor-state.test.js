@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 import { createState } from "../../src/app/state.js";
 
 describe("live technical monitor state", () => {
@@ -24,7 +24,10 @@ describe("live technical monitor state", () => {
         status: "NOT AVAILABLE"
       },
       automarker: {
-        enabled: true,
+        enabled: false,
+        active: false,
+        intervalSeconds: null,
+        nextAtSeconds: null,
         lastEvent: null
       }
     });
