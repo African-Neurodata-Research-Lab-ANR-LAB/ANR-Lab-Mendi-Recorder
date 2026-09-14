@@ -6,6 +6,10 @@ import {
   AutoMarkerScheduler
 } from "./auto-marker.js";
 
+import {
+  PausableProtocolClock
+} from "../recording/pausable-protocol-clock.js";
+
 function eventPriority(event) {
   if (
     event.markerType === "phase_boundary" &&
@@ -38,6 +42,7 @@ function compareEvents(a, b) {
 export class ExperimentEngine {
   constructor({
     session,
+    protocolClock = null,
     pollMs = 100,
     setIntervalFn = globalThis.setInterval,
     clearIntervalFn = globalThis.clearInterval
@@ -51,22 +56,40 @@ export class ExperimentEngine {
     this.active = false;
     this.pendingEvents = [];
 
+    this.protocolClock =
+      protocolClock ??
+      new PausableProtocolClock({
+        sessionClock: this.session.clock
+      });
+
     const bufferEvent = event => {
+      const protocolTime = event.onset;
+
+      const mappedEvent = {
+        ...structuredClone(event),
+        protocolTime,
+        onset:
+          this.protocolClock
+            .protocolToSessionSeconds(
+              protocolTime
+            )
+      };
+
       this.pendingEvents.push(
-        structuredClone(event)
+        mappedEvent
       );
 
-      return event;
+      return mappedEvent;
     };
 
     this.protocol = new ProtocolRunner({
-      clock: this.session.clock,
+      clock: this.protocolClock,
       addMarker: bufferEvent
     });
 
     this.autoMarker =
       new AutoMarkerScheduler({
-        clock: this.session.clock,
+        clock: this.protocolClock,
         addMarker: bufferEvent,
         getContextAt: timeSeconds =>
           this.protocol.getContextAt(
@@ -82,6 +105,10 @@ export class ExperimentEngine {
     this.stop();
 
     this.pendingEvents = [];
+
+    this.protocolClock.start({
+      sessionStartSeconds: 0
+    });
 
     this.protocol.start(protocol);
 
@@ -126,6 +153,26 @@ export class ExperimentEngine {
     return this.getState();
   }
 
+  pause() {
+    if (!this.active) {
+      return this.getState();
+    }
+
+    this.protocolClock.pause();
+
+    return this.getState();
+  }
+
+  resume() {
+    if (!this.active) {
+      return this.getState();
+    }
+
+    this.protocolClock.resume();
+
+    return this.getState();
+  }
+
   flushPendingEvents() {
     const events = this.pendingEvents
       .slice()
@@ -155,6 +202,10 @@ export class ExperimentEngine {
       this.autoMarker.stop();
     }
 
+    if (this.protocolClock) {
+      this.protocolClock.stop();
+    }
+
     this.active = false;
   }
 
@@ -164,7 +215,11 @@ export class ExperimentEngine {
       protocol:
         this.protocol.getState(),
       autoMarker:
-        this.autoMarker.getState()
+        this.autoMarker.getState(),
+      protocolClock:
+        this.protocolClock.getState()
     };
   }
 }
+
+

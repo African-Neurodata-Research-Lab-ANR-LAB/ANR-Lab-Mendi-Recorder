@@ -205,3 +205,171 @@ describe("ExperimentEngine", () => {
     ).toBe(false);
   });
 });
+
+it("pauses protocol timing while Session Clock continues", () => {
+  let sessionNow = 0;
+  const events = [];
+
+  const session = {
+    clock: {
+      nowSeconds: () => sessionNow
+    },
+    addMarkerAt: event => {
+      events.push(event);
+      return event;
+    }
+  };
+
+  const engine = new ExperimentEngine({
+    session,
+    setIntervalFn: () => 123,
+    clearIntervalFn: vi.fn()
+  });
+
+  engine.start({
+    protocol: {
+      phases: [
+        {
+          name: "Baseline",
+          type: "baseline",
+          durationSeconds: 10
+        },
+        {
+          name: "Task",
+          type: "task",
+          durationSeconds: 10
+        }
+      ]
+    },
+    autoMarkerIntervalSeconds: 5
+  });
+
+  engine.tick();
+
+  sessionNow = 8;
+  engine.tick();
+
+  engine.pause();
+
+  sessionNow = 68;
+  engine.tick();
+
+  expect(
+    engine.getState().protocol.phaseRemainingSeconds
+  ).toBe(2);
+});
+
+it("maps protocol event times onto the true Session Clock after resume", () => {
+  let sessionNow = 0;
+  const events = [];
+
+  const session = {
+    clock: {
+      nowSeconds: () => sessionNow
+    },
+    addMarkerAt: event => {
+      events.push(event);
+      return event;
+    }
+  };
+
+  const engine = new ExperimentEngine({
+    session,
+    setIntervalFn: () => 123,
+    clearIntervalFn: vi.fn()
+  });
+
+  engine.start({
+    protocol: {
+      phases: [
+        {
+          name: "Baseline",
+          type: "baseline",
+          durationSeconds: 10
+        },
+        {
+          name: "Task",
+          type: "task",
+          durationSeconds: 10
+        }
+      ]
+    }
+  });
+
+  engine.tick();
+
+  sessionNow = 8;
+  engine.tick();
+
+  engine.pause();
+
+  sessionNow = 68;
+  engine.resume();
+
+  sessionNow = 70;
+  engine.tick();
+
+  const boundaries = events.filter(
+    event =>
+      event.description === "BASELINE_END" ||
+      event.description === "TASK_START"
+  );
+
+  expect(
+    boundaries.map(event => ({
+      onset: event.onset,
+      protocolTime: event.protocolTime,
+      description: event.description
+    }))
+  ).toEqual([
+    {
+      onset: 70,
+      protocolTime: 10,
+      description: "BASELINE_END"
+    },
+    {
+      onset: 70,
+      protocolTime: 10,
+      description: "TASK_START"
+    }
+  ]);
+});
+
+it("exposes protocol clock pause state", () => {
+  let sessionNow = 0;
+
+  const session = {
+    clock: {
+      nowSeconds: () => sessionNow
+    },
+    addMarkerAt: event => event
+  };
+
+  const engine = new ExperimentEngine({
+    session,
+    setIntervalFn: () => 123,
+    clearIntervalFn: vi.fn()
+  });
+
+  engine.start({
+    protocol: {
+      phases: [
+        {
+          name: "Baseline",
+          type: "baseline",
+          durationSeconds: 10
+        }
+      ]
+    }
+  });
+
+  engine.pause();
+
+  expect(
+    engine.getState().protocolClock
+  ).toMatchObject({
+    paused: true,
+    protocolSeconds: 0,
+    sessionSeconds: 0
+  });
+});
