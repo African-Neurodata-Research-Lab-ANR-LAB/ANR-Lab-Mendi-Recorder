@@ -25,6 +25,18 @@
   }
 });
 
+const initialExperimentState = Object.freeze({
+  sessionSeconds: 0,
+  protocolSeconds: 0,
+  phaseName: null,
+  phaseType: null,
+  phaseElapsedSeconds: 0,
+  phaseRemainingSeconds: 0,
+  cycle: null,
+  totalCycles: null,
+  nextPhaseName: null,
+  progress: 0
+});
 const initialPacketInspectionState = Object.freeze({
   totalPackets: 0,
   byCharacteristic: {
@@ -45,6 +57,7 @@ export const initialState = Object.freeze({
   browserSupport: "unknown",
   connection: "disconnected",
   recording: "idle",
+  sessionStatus: "idle",
   device: null,
   battery: null,
   packetCount: 0,
@@ -53,12 +66,16 @@ export const initialState = Object.freeze({
   recoveryAvailable: false,
   error: null,
   monitor: initialMonitorState,
+  experiment: initialExperimentState,
   packetInspection: initialPacketInspectionState
 });
 export function createState() {
   return {
     ...initialState,
     markers: [],
+    experiment: {
+      ...initialExperimentState
+    },
     monitor: {
       ...initialMonitorState,
       contact: {
@@ -89,3 +106,4 @@ export function createState() {
     }
   };
 }
+
