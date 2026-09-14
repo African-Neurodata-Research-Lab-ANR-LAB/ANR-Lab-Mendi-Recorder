@@ -1,5 +1,6 @@
 ﻿const VALID_TYPES = new Set([
   "baseline",
+  "get_ready",
   "task",
   "rest",
   "custom"
@@ -66,7 +67,9 @@ export function normalizeProtocol(input = {}) {
         type,
         durationSeconds,
         autoMarkerEnabled:
-          phase.autoMarkerEnabled !== false
+          phase.autoMarkerEnabled === undefined
+            ? type !== "get_ready"
+            : phase.autoMarkerEnabled !== false
       };
     }
   );
@@ -119,3 +122,6 @@ export function buildProtocolTimeline(protocolInput) {
 
   return timeline;
 }
+
+
+

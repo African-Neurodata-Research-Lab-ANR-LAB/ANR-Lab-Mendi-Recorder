@@ -78,3 +78,22 @@ describe("Protocol model", () => {
     ).toThrow("durationSeconds");
   });
 });
+
+it("supports get_ready phases with AutoMarker off by default", () => {
+  const protocol = normalizeProtocol({
+    phases: [
+      {
+        name: "Get Ready",
+        type: "get_ready",
+        durationSeconds: 5
+      }
+    ]
+  });
+
+  expect(protocol.phases[0]).toMatchObject({
+    name: "Get Ready",
+    type: "get_ready",
+    durationSeconds: 5,
+    autoMarkerEnabled: false
+  });
+});
