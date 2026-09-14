@@ -65,6 +65,7 @@ describe("Exports", () => {
     expect(tsv).toContain(
       [
         "onset",
+        "protocol_time",
         "duration",
         "trial_type",
         "marker_type",
@@ -78,6 +79,7 @@ describe("Exports", () => {
     expect(tsv).toContain(
       [
         "10",
+        "",
         "0",
         "task",
         "phase_boundary",
@@ -93,3 +95,52 @@ describe("Exports", () => {
     );
   });
 });
+
+it("exports Session onset separately from protocol time", () => {
+  const tsv = eventsTsv([
+    {
+      onset: 134,
+      protocolTime: 53,
+      duration: 0,
+      trialType: "system",
+      markerType: "system",
+      phase: "Task",
+      cycle: 1,
+      description:
+        "DEVICE_RECONNECTED",
+      source: "system"
+    }
+  ]);
+
+  expect(tsv).toContain(
+    [
+      "onset",
+      "protocol_time",
+      "duration",
+      "trial_type",
+      "marker_type",
+      "phase",
+      "cycle",
+      "description",
+      "source"
+    ].join("\t")
+  );
+
+  expect(tsv).toContain(
+    [
+      "134",
+      "53",
+      "0",
+      "system",
+      "system",
+      "Task",
+      "1",
+      "DEVICE_RECONNECTED",
+      "system"
+    ].join("\t")
+  );
+});
+
+
+
+

@@ -7,6 +7,7 @@
 export function eventsTsv(events) {
   const rows = [[
     "onset",
+    "protocol_time",
     "duration",
     "trial_type",
     "marker_type",
@@ -19,6 +20,7 @@ export function eventsTsv(events) {
   for (const event of events) {
     rows.push([
       event.onset,
+      event.protocolTime ?? "",
       event.duration ?? 0,
       event.trialType ??
         event.description ??
