@@ -96,3 +96,26 @@ it("provides add, reorder, and remove controls for protocol phases", () => {
     ).not.toBeNull();
   }
 });
+
+it("adds a new phase when Add Phase is clicked", async () => {
+  const ui = await import("../../src/ui/recorder.js");
+
+  expect(
+    typeof ui.wireProtocolBuilder
+  ).toBe("function");
+
+  const root = document.createElement("div");
+  root.innerHTML = ui.recorderMarkup();
+
+  ui.wireProtocolBuilder?.(root);
+
+  root
+    .querySelector("#add-phase")
+    .click();
+
+  expect(
+    root.querySelectorAll(
+      "[data-protocol-phase]"
+    )
+  ).toHaveLength(3);
+});

@@ -357,3 +357,53 @@
 }
 
 
+
+export function wireProtocolBuilder(root) {
+  const addButton =
+    root.querySelector("#add-phase");
+
+  if (!addButton) return;
+
+  addButton.addEventListener(
+    "click",
+    () => {
+      const phases = Array.from(
+        root.querySelectorAll(
+          "[data-protocol-phase]"
+        )
+      );
+
+      const template =
+        phases.at(-1);
+
+      if (!template) return;
+
+      const phase =
+        template.cloneNode(true);
+
+      const nextNumber =
+        phases.length + 1;
+
+      phase.dataset.phaseId =
+        `phase-${nextNumber}`;
+
+      phase
+        .querySelector("[data-phase-name]")
+        .value = "Custom";
+
+      phase
+        .querySelector("[data-phase-type]")
+        .value = "custom";
+
+      phase
+        .querySelector("[data-phase-duration]")
+        .value = "60";
+
+      phase
+        .querySelector("[data-phase-automarker]")
+        .checked = true;
+
+      addButton.before(phase);
+    }
+  );
+}
