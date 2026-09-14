@@ -406,9 +406,75 @@ export function wireProtocolBuilder(root) {
       addButton.before(phase);
     }
   );
+
+  root.addEventListener(
+    "click",
+    (event) => {
+      const phase =
+        event.target.closest(
+          "[data-protocol-phase]"
+        );
+
+      if (!phase) return;
+
+      if (
+        event.target.closest(
+          "[data-phase-up]"
+        )
+      ) {
+        const previous =
+          phase.previousElementSibling;
+
+        if (
+          previous?.matches(
+            "[data-protocol-phase]"
+          )
+        ) {
+          phase.parentElement.insertBefore(
+            phase,
+            previous
+          );
+        }
+
+        return;
+      }
+
+      if (
+        event.target.closest(
+          "[data-phase-down]"
+        )
+      ) {
+        const next =
+          phase.nextElementSibling;
+
+        if (
+          next?.matches(
+            "[data-protocol-phase]"
+          )
+        ) {
+          phase.parentElement.insertBefore(
+            next,
+            phase
+          );
+        }
+
+        return;
+      }
+
+      if (
+        event.target.closest(
+          "[data-phase-remove]"
+        )
+      ) {
+        phase.remove();
+      }
+    }
+  );
 }
 
 export function mountRecorder(root) {
   root.innerHTML = recorderMarkup();
   wireProtocolBuilder(root);
 }
+
+

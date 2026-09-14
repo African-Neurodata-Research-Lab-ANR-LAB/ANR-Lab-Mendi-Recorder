@@ -141,3 +141,80 @@ it("mounts the recorder with protocol builder behavior enabled", async () => {
     )
   ).toHaveLength(3);
 });
+
+it("removes a phase when Remove is clicked", async () => {
+  const ui = await import("../../src/ui/recorder.js");
+
+  const root = document.createElement("div");
+  ui.mountRecorder(root);
+
+  const phasesBefore =
+    root.querySelectorAll(
+      "[data-protocol-phase]"
+    );
+
+  expect(phasesBefore).toHaveLength(2);
+
+  phasesBefore[0]
+    .querySelector(
+      "[data-phase-remove]"
+    )
+    .click();
+
+  expect(
+    root.querySelectorAll(
+      "[data-protocol-phase]"
+    )
+  ).toHaveLength(1);
+});
+
+it("reorders protocol phases with Move Up and Move Down", async () => {
+  const ui = await import("../../src/ui/recorder.js");
+
+  const root = document.createElement("div");
+  ui.mountRecorder(root);
+
+  let phases = Array.from(
+    root.querySelectorAll(
+      "[data-protocol-phase]"
+    )
+  );
+
+  phases[0]
+    .querySelector("[data-phase-down]")
+    .click();
+
+  phases = Array.from(
+    root.querySelectorAll(
+      "[data-protocol-phase]"
+    )
+  );
+
+  expect(
+    phases[0]
+      .querySelector("[data-phase-name]")
+      .value
+  ).toBe("Task");
+
+  expect(
+    phases[1]
+      .querySelector("[data-phase-name]")
+      .value
+  ).toBe("Baseline");
+
+  phases[1]
+    .querySelector("[data-phase-up]")
+    .click();
+
+  phases = Array.from(
+    root.querySelectorAll(
+      "[data-protocol-phase]"
+    )
+  );
+
+  expect(
+    phases[0]
+      .querySelector("[data-phase-name]")
+      .value
+  ).toBe("Baseline");
+});
