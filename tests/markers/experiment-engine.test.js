@@ -373,3 +373,78 @@ it("exposes protocol clock pause state", () => {
     sessionSeconds: 0
   });
 });
+
+it("does not create AutoMarker backlog during a long protocol pause", () => {
+  let sessionNow = 0;
+  const events = [];
+
+  const session = {
+    clock: {
+      nowSeconds: () => sessionNow
+    },
+    addMarkerAt: event => {
+      events.push(event);
+      return event;
+    }
+  };
+
+  const engine = new ExperimentEngine({
+    session,
+    setIntervalFn: () => 123,
+    clearIntervalFn: vi.fn()
+  });
+
+  engine.start({
+    protocol: {
+      phases: [
+        {
+          name: "Baseline",
+          type: "baseline",
+          durationSeconds: 30
+        }
+      ]
+    },
+    autoMarkerIntervalSeconds: 5
+  });
+
+  engine.tick();
+
+  sessionNow = 5;
+  engine.tick();
+
+  sessionNow = 8;
+  engine.tick();
+  engine.pause();
+
+  sessionNow = 68;
+  engine.tick();
+
+  engine.resume();
+
+  sessionNow = 70;
+  engine.tick();
+
+  const autoMarkers = events
+    .filter(
+      event =>
+        event.markerType === "auto_marker"
+    )
+    .map(event => ({
+      onset: event.onset,
+      protocolTime: event.protocolTime,
+      description: event.description
+    }));
+
+  expect(autoMarkers).toEqual([
+    {
+      onset: 5,
+      protocolTime: 5,
+      description: "AUTO_MARKER_001"
+    },
+    {
+      onset: 70,
+      protocolTime: 10,
+      description: "AUTO_MARKER_002"
+    }
+  ]);
+});
