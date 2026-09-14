@@ -1,4 +1,4 @@
-import { createState } from "./state.js";
+﻿import { createState } from "./state.js";
 import {
   startAcquisition,
   stopAcquisition,
@@ -19,7 +19,7 @@ import { eventsTsv } from "../export/tsv.js";
 import { buildMetadata } from "../export/metadata.js";
 import { createSnirf } from "../export/snirf.js";
 
-import { recorderMarkup } from "../ui/recorder.js";
+import { mountRecorder } from "../ui/recorder.js";
 import {
   readSetupForm,
   validateSetup
@@ -37,7 +37,7 @@ import { renderTrace } from "../visualization/trace-renderer.js";
 
 const root = document.querySelector("#app");
 
-root.innerHTML = recorderMarkup();
+mountRecorder(root);
 
 
 const state = createState();
@@ -737,3 +737,4 @@ async ()=>{
 
 
 render();
+

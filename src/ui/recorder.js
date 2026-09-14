@@ -407,3 +407,8 @@ export function wireProtocolBuilder(root) {
     }
   );
 }
+
+export function mountRecorder(root) {
+  root.innerHTML = recorderMarkup();
+  wireProtocolBuilder(root);
+}

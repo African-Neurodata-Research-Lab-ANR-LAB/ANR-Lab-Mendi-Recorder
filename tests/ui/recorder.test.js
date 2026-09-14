@@ -119,3 +119,25 @@ it("adds a new phase when Add Phase is clicked", async () => {
     )
   ).toHaveLength(3);
 });
+
+it("mounts the recorder with protocol builder behavior enabled", async () => {
+  const ui = await import("../../src/ui/recorder.js");
+
+  expect(
+    typeof ui.mountRecorder
+  ).toBe("function");
+
+  const root = document.createElement("div");
+
+  ui.mountRecorder?.(root);
+
+  root
+    .querySelector("#add-phase")
+    .click();
+
+  expect(
+    root.querySelectorAll(
+      "[data-protocol-phase]"
+    )
+  ).toHaveLength(3);
+});
