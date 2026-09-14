@@ -1,10 +1,10 @@
-import { SampleClock } from "./sample-clock.js";
+﻿import { SampleClock } from "./sample-clock.js";
 import { RawStore } from "./raw-store.js";
 import { MarkerStore } from "./marker-store.js";
 
 export class Session {
-  constructor() {
-    this.clock = new SampleClock();
+  constructor({ clock = new SampleClock() } = {}) {
+    this.clock = clock;
     this.raw = new RawStore();
     this.markers = new MarkerStore();
     this.decoded = [];
@@ -16,6 +16,7 @@ export class Session {
     this.metadata = structuredClone(metadata);
     this.clock.start();
     this.status = "recording";
+
     this.markers.add({
       onset: 0,
       duration: 0,
@@ -27,7 +28,9 @@ export class Session {
   appendRaw(packet) {
     if (this.status !== "recording") return;
 
-    const timestampMs = packet.timestampMs ?? packet.receivedAtMs;
+    const timestampMs =
+      packet.timestampMs ??
+      packet.receivedAtMs;
 
     this.raw.append({
       ...packet,
@@ -38,22 +41,63 @@ export class Session {
 
   appendDecoded(sample) {
     if (this.status !== "recording") return;
+
     this.decoded.push({
       ...structuredClone(sample),
       timeS: this.clock.nowSeconds()
     });
   }
 
-  addMarker(description, source = "manual") {
-    return this.markers.add({
+  addMarker(
+    description,
+    source = "manual",
+    details = {}
+  ) {
+    return this.addMarkerAt({
       onset: this.clock.nowSeconds(),
+      duration: details.duration ?? 0,
+      trialType:
+        details.trialType ?? description,
+      markerType:
+        details.markerType ?? source,
+      phase:
+        details.phase ?? null,
+      cycle:
+        details.cycle ?? null,
       description,
       source
     });
   }
 
+  addMarkerAt(event) {
+    if (this.status !== "recording") {
+      return null;
+    }
+
+    return this.markers.add({
+      onset: event.onset,
+      duration: event.duration ?? 0,
+      trialType:
+        event.trialType ??
+        event.description,
+      markerType:
+        event.markerType ??
+        event.source ??
+        "manual",
+      phase:
+        event.phase ?? null,
+      cycle:
+        event.cycle ?? null,
+      description: event.description,
+      source:
+        event.source ?? "manual"
+    });
+  }
+
   stop() {
-    if (this.status !== "recording") return;
+    if (this.status !== "recording") {
+      return;
+    }
 
     this.markers.add({
       onset: this.clock.nowSeconds(),
@@ -67,9 +111,11 @@ export class Session {
 
   snapshot() {
     return {
-      metadata: structuredClone(this.metadata),
+      metadata:
+        structuredClone(this.metadata),
       raw: this.raw.getAll(),
-      decoded: structuredClone(this.decoded),
+      decoded:
+        structuredClone(this.decoded),
       markers: this.markers.all(),
       status: this.status
     };
