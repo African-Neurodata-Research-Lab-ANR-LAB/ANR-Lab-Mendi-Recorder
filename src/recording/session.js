@@ -76,6 +76,8 @@ export class Session {
 
     return this.markers.add({
       onset: event.onset,
+      protocolTime:
+        event.protocolTime ?? null,
       duration: event.duration ?? 0,
       trialType:
         event.trialType ??
@@ -121,3 +123,4 @@ export class Session {
     };
   }
 }
+

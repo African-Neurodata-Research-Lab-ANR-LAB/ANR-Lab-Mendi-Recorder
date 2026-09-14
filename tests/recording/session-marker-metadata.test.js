@@ -58,3 +58,33 @@ describe("Session marker metadata", () => {
     expect(marker.description).toBe("BASELINE_END");
   });
 });
+
+it("preserves protocol time separately from Session onset", () => {
+  const session =
+    new Session({
+      clock: makeClock(134)
+    });
+
+  session.start({});
+
+  const marker =
+    session.addMarkerAt({
+      onset: 134,
+      protocolTime: 53,
+      duration: 0,
+      trialType: "system",
+      markerType: "system",
+      phase: "Task",
+      cycle: 1,
+      description:
+        "DEVICE_RECONNECTED",
+      source: "system"
+    });
+
+  expect(marker).toMatchObject({
+    onset: 134,
+    protocolTime: 53,
+    description:
+      "DEVICE_RECONNECTED"
+  });
+});

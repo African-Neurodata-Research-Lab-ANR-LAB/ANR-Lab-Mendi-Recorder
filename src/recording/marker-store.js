@@ -5,6 +5,7 @@
 
   add({
     onset,
+    protocolTime = null,
     duration = 0,
     trialType = "",
     markerType = "",
@@ -15,6 +16,7 @@
   }) {
     const marker = {
       onset,
+      protocolTime,
       duration,
       trialType: trialType || description,
       markerType: markerType || source,
