@@ -1,192 +1,219 @@
+function phaseOptions(selected) {
+  const options = [
+    ["baseline", "Baseline"],
+    ["get_ready", "Get Ready"],
+    ["task", "Task"],
+    ["rest", "Rest"],
+    ["custom", "Custom"]
+  ];
+
+  return options
+    .map(
+      ([value, label]) => `
+        <option
+          value="${value}"
+          ${
+            value === selected
+              ? "selected"
+              : ""
+          }
+        >${label}</option>
+      `
+    )
+    .join("");
+}
+
+function phaseMarkup({
+  id,
+  name,
+  type,
+  durationSeconds,
+  autoMarkerEnabled
+}) {
+  return `
+    <div
+      class="phase-row"
+      data-protocol-phase
+      data-phase-id="${id}"
+    >
+      <label class="phase-field phase-name">
+        <span>Phase</span>
+        <input
+          data-phase-name
+          value="${name}"
+          aria-label="Phase name"
+        >
+      </label>
+
+      <label class="phase-field">
+        <span>Type</span>
+        <select
+          data-phase-type
+          aria-label="Phase type"
+        >
+          ${phaseOptions(type)}
+        </select>
+      </label>
+
+      <label class="phase-field phase-duration">
+        <span>Duration</span>
+        <div class="input-suffix">
+          <input
+            data-phase-duration
+            type="number"
+            min="1"
+            value="${durationSeconds}"
+            aria-label="Duration seconds"
+          >
+          <span>s</span>
+        </div>
+      </label>
+
+      <label class="check-field">
+        <input
+          type="checkbox"
+          data-phase-automarker
+          ${
+            autoMarkerEnabled
+              ? "checked"
+              : ""
+          }
+        >
+        <span>AutoMarker</span>
+      </label>
+
+      <div class="phase-actions">
+        <button
+          type="button"
+          data-phase-up
+          class="icon-button"
+          aria-label="Move phase up"
+          title="Move phase up"
+        >↑</button>
+        <button
+          type="button"
+          data-phase-down
+          class="icon-button"
+          aria-label="Move phase down"
+          title="Move phase down"
+        >↓</button>
+        <button
+          type="button"
+          data-phase-remove
+          class="icon-button icon-button-danger"
+          aria-label="Remove phase"
+          title="Remove phase"
+        >×</button>
+      </div>
+    </div>
+  `;
+}
+
 export function recorderMarkup() {
   return `
     <main class="shell">
-      <header>
-        <div>
-          <p class="eyebrow">AFRICAN NEURODATA RESEARCH LAB</p>
-          <h1>ANR Lab Mendi Recorder</h1>
-          <p>Research acquisition only · raw-first · local processing</p>
+      <header class="app-header">
+        <div class="brand-lockup">
+          <div class="brand-mark">ANR</div>
+          <div>
+            <p class="eyebrow">AFRICAN NEURODATA RESEARCH LAB</p>
+            <h1>ANR Mendi Research Recorder</h1>
+            <p class="subhead">
+              Raw optical acquisition · protocol timing · local research export
+            </p>
+          </div>
         </div>
-        <div class="status-card">
-          <span>Device</span>
-          <strong data-status>disconnected</strong>
+
+        <div class="header-statuses">
+          <div class="status-pill">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span>Device</span>
+            <strong data-status>disconnected</strong>
+          </div>
+          <div class="status-pill status-pill-muted">
+            <span>Session</span>
+            <strong data-session-status>idle</strong>
+          </div>
         </div>
       </header>
 
-      <section class="panel">
-        <h2>Session Setup</h2>
+      <section id="recovery"></section>
+
+      <details class="panel setup-panel" open>
+        <summary>
+          <div>
+            <p class="eyebrow">STEP 1</p>
+            <h2>Session Setup & Protocol</h2>
+          </div>
+          <span class="summary-hint">Configure session</span>
+        </summary>
+
         <form id="setup-form">
-          <div class="grid">
-            <label>Participant Code<input name="participantCode" autocomplete="off" required></label>
-            <label>Session Code<input name="sessionCode" autocomplete="off" required></label>
-                        <div class="protocol-builder">
-              <h3>Protocol Builder</h3>
-
-              <div
-                data-protocol-phase
-                data-phase-id="phase-1"
+          <div class="setup-grid">
+            <label class="field">
+              <span>Participant Code</span>
+              <input
+                name="participantCode"
+                autocomplete="off"
+                placeholder="e.g. ANR_001"
+                required
               >
-                <input
-                  data-phase-name
-                  value="Baseline"
-                  aria-label="Phase name"
-                >
+            </label>
 
-                <select
-                  data-phase-type
-                  aria-label="Phase type"
-                >
-                  <option
-                    value="baseline"
-                    selected
-                  >
-                    Baseline
-                  </option>
-                  <option value="get_ready">
-                    Get Ready
-                  </option>
-                  <option value="task">
-                    Task
-                  </option>
-                  <option value="rest">
-                    Rest
-                  </option>
-                  <option value="custom">
-                    Custom
-                  </option>
-                </select>
-
-                <input
-                  data-phase-duration
-                  type="number"
-                  min="1"
-                  value="30"
-                  aria-label="Duration seconds"
-                >
-
-                <label>
-                  AutoMarker
-                  <input
-                    type="checkbox"
-                    data-phase-automarker
-                    checked
-                  >
-                </label>
-
-                <div class="phase-actions">
-                  <button
-                    type="button"
-                    data-phase-up
-                    aria-label="Move phase up"
-                  >
-                    Move Up
-                  </button>
-
-                  <button
-                    type="button"
-                    data-phase-down
-                    aria-label="Move phase down"
-                  >
-                    Move Down
-                  </button>
-
-                  <button
-                    type="button"
-                    data-phase-remove
-                    aria-label="Remove phase"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-
-              <div
-                data-protocol-phase
-                data-phase-id="phase-2"
+            <label class="field">
+              <span>Session Code</span>
+              <input
+                name="sessionCode"
+                autocomplete="off"
+                placeholder="e.g. SES_001"
+                required
               >
-                <input
-                  data-phase-name
-                  value="Task"
-                  aria-label="Phase name"
-                >
+            </label>
 
-                <select
-                  data-phase-type
-                  aria-label="Phase type"
-                >
-                  <option value="baseline">
-                    Baseline
-                  </option>
-                  <option value="get_ready">
-                    Get Ready
-                  </option>
-                  <option
-                    value="task"
-                    selected
-                  >
-                    Task
-                  </option>
-                  <option value="rest">
-                    Rest
-                  </option>
-                  <option value="custom">
-                    Custom
-                  </option>
-                </select>
+            <label class="field field-wide">
+              <span>Session Notes <small>optional</small></span>
+              <textarea
+                name="notes"
+                rows="2"
+                placeholder="Research notes without direct participant identifiers"
+              ></textarea>
+            </label>
+          </div>
 
-                <input
-                  data-phase-duration
-                  type="number"
-                  min="1"
-                  value="60"
-                  aria-label="Duration seconds"
-                >
-
-                <label>
-                  AutoMarker
-                  <input
-                    type="checkbox"
-                    data-phase-automarker
-                    checked
-                  >
-                </label>
-
-                <div class="phase-actions">
-                  <button
-                    type="button"
-                    data-phase-up
-                    aria-label="Move phase up"
-                  >
-                    Move Up
-                  </button>
-
-                  <button
-                    type="button"
-                    data-phase-down
-                    aria-label="Move phase down"
-                  >
-                    Move Down
-                  </button>
-
-                  <button
-                    type="button"
-                    data-phase-remove
-                    aria-label="Remove phase"
-                  >
-                    Remove
-                  </button>
-                </div>
+          <div class="protocol-builder">
+            <div class="section-heading">
+              <div>
+                <h3>Protocol Builder</h3>
+                <p>Phases run continuously after Start Session.</p>
               </div>
-
               <button
                 type="button"
                 id="add-phase"
-              >
-                Add Phase
-              </button>
+                class="button button-secondary"
+              >+ Add Phase</button>
+            </div>
 
-              <label>
-                Repeat Count
+            <div class="phase-list">
+              ${phaseMarkup({
+                id: "phase-1",
+                name: "Baseline",
+                type: "baseline",
+                durationSeconds: 30,
+                autoMarkerEnabled: true
+              })}
+
+              ${phaseMarkup({
+                id: "phase-2",
+                name: "Task",
+                type: "task",
+                durationSeconds: 60,
+                autoMarkerEnabled: true
+              })}
+            </div>
+
+            <div class="protocol-options">
+              <label class="field compact-field">
+                <span>Repeat Count</span>
                 <input
                   name="repeatCount"
                   type="number"
@@ -195,220 +222,354 @@ export function recorderMarkup() {
                 >
               </label>
 
-              <label>
-                Global AutoMarker
+              <label class="check-field option-check">
                 <input
                   type="checkbox"
                   name="autoMarkerEnabled"
                 >
+                <span>Global AutoMarker</span>
               </label>
 
-              <label>
-                AutoMarker Interval (seconds)
+              <label class="field compact-field">
+                <span>AutoMarker Interval</span>
+                <div class="input-suffix">
+                  <input
+                    name="autoMarkerIntervalSeconds"
+                    type="number"
+                    min="1"
+                    value="5"
+                  >
+                  <span>s</span>
+                </div>
+              </label>
+
+              <label class="check-field option-check">
                 <input
-                  name="autoMarkerIntervalSeconds"
-                  type="number"
-                  min="1"
-                  value="5"
+                  type="checkbox"
+                  name="imuEnabled"
+                  checked
                 >
+                <span>Record IMU</span>
               </label>
             </div>
-            <label>IMU<input type="checkbox" name="imuEnabled" checked></label>
           </div>
-          <label>Notes<textarea name="notes"></textarea></label>
-          <p class="privacy">Use pseudonymous codes. Do not enter names, emails, phone numbers, hospital IDs, or addresses.</p>
-          <div class="actions">
-            <button type="submit">Prepare Session</button>
-            <button type="button" id="connect">Connect Mendi</button>
-            <button type="button" id="reconnect">Reconnect Mendi</button>
-            <button type="button" id="start">Start Recording</button>
-            <button type="button" id="stop">Stop Recording</button>
-            <button type="button" id="marker">Add Marker</button>
-          </div>
+
+          <p class="privacy">
+            Use pseudonymous codes only. Do not enter names, email addresses,
+            phone numbers, hospital IDs, or home addresses.
+          </p>
         </form>
+      </details>
+
+      <section class="session-toolbar panel">
+        <div class="toolbar-copy">
+          <p class="eyebrow">ACQUISITION CONTROL</p>
+          <strong>Prepare → Connect → Start</strong>
+        </div>
+        <div class="actions primary-actions">
+          <button
+            type="submit"
+            form="setup-form"
+            class="button button-secondary"
+          >Prepare Session</button>
+          <button
+            type="button"
+            id="connect"
+            class="button button-primary"
+          >Connect Mendi</button>
+          <button
+            type="button"
+            id="start"
+            class="button button-record"
+          >Start Session</button>
+          <button
+            type="button"
+            id="marker"
+            class="button button-secondary"
+          >+ Add Marker</button>
+          <button
+            type="button"
+            id="stop"
+            class="button button-danger"
+          >End Session</button>
+          <button
+            type="button"
+            id="reconnect"
+            class="button button-quiet"
+          >Reconnect</button>
+        </div>
       </section>
 
       <section class="panel protocol-dashboard">
-        <h2>Protocol Session</h2>
-
-        <div class="protocol-session-grid">
+        <div class="protocol-hero">
           <div>
-            <span>Session Clock</span>
-            <strong data-session-clock>00:00:00</strong>
+            <p class="eyebrow">CURRENT PHASE</p>
+            <div class="phase-title-row">
+              <h2 data-current-phase>—</h2>
+              <span class="phase-type" data-current-phase-type>—</span>
+            </div>
+            <p>
+              Next: <strong data-next-phase>—</strong>
+              · Cycle
+              <strong>
+                <span data-current-cycle>—</span>/<span data-total-cycles>—</span>
+              </strong>
+            </p>
           </div>
-
-          <div>
-            <span>Protocol Clock</span>
-            <strong data-protocol-clock>00:00:00</strong>
-          </div>
-
-          <div>
-            <span>Status</span>
-            <strong data-session-status>idle</strong>
-          </div>
-
-          <div>
-            <span>Current Phase</span>
-            <strong data-current-phase>-</strong>
-          </div>
-
-          <div>
-            <span>Phase Type</span>
-            <strong data-current-phase-type>-</strong>
-          </div>
-
-          <div>
+          <div class="countdown-card">
             <span>Time Remaining</span>
             <strong data-phase-remaining>00:00</strong>
           </div>
+        </div>
 
-          <div>
-            <span>Cycle</span>
-            <strong>
-              <span data-current-cycle>-</span>
-              /
-              <span data-total-cycles>-</span>
-            </strong>
+        <div class="progress-stack">
+          <div class="progress-row">
+            <div class="progress-label">
+              <span>Phase progress</span>
+              <strong data-phase-progress-label>0%</strong>
+            </div>
+            <div class="progress-track">
+              <div
+                class="progress-fill"
+                data-phase-progress
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+              ></div>
+            </div>
           </div>
+          <div class="progress-row progress-row-secondary">
+            <div class="progress-label">
+              <span>Protocol progress</span>
+              <strong data-protocol-progress-label>0%</strong>
+            </div>
+            <div class="progress-track">
+              <div
+                class="progress-fill"
+                data-protocol-progress
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+              ></div>
+            </div>
+          </div>
+        </div>
 
-          <div>
-            <span>Next Phase</span>
-            <strong data-next-phase>-</strong>
+        <div class="clock-grid">
+          <div class="clock-card">
+            <span>Session Clock</span>
+            <strong data-session-clock>00:00:00</strong>
+          </div>
+          <div class="clock-card">
+            <span>Protocol Clock</span>
+            <strong data-protocol-clock>00:00:00</strong>
+          </div>
+          <div class="clock-card">
+            <span>Recording</span>
+            <strong data-recording>idle</strong>
           </div>
         </div>
       </section>
-      <section class="metrics">
-        <div><span>Recording</span><strong data-recording>idle</strong></div>
-        <div><span>Packets</span><strong data-packets>0</strong></div>
-        <div><span>Quality</span><strong data-quality>NO SIGNAL</strong></div>
-        <div><span>Battery</span><strong data-battery>—</strong></div>
+
+      <section class="signal-layout">
+        <div class="panel signal-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">LIVE RAW OPTICAL SIGNAL</p>
+              <h2>Left Channel</h2>
+            </div>
+            <div class="trace-legend" aria-label="Trace legend">
+              <span><i class="legend-red"></i>Red</span>
+              <span><i class="legend-ir"></i>IR/NIR</span>
+            </div>
+          </div>
+
+          <div class="latest-values">
+            <span>Red <strong data-left-red>—</strong></span>
+            <span>IR/NIR <strong data-left-ir>—</strong></span>
+          </div>
+
+          <div class="canvas-shell">
+            <canvas
+              id="trace"
+              width="1000"
+              height="300"
+              aria-label="Live left raw optical Red and IR/NIR traces"
+            ></canvas>
+            <div class="canvas-watermark">RAW DEVICE UNITS</div>
+          </div>
+        </div>
+
+        <div class="panel signal-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">LIVE RAW OPTICAL SIGNAL</p>
+              <h2>Right Channel</h2>
+            </div>
+            <div class="trace-legend" aria-label="Trace legend">
+              <span><i class="legend-red"></i>Red</span>
+              <span><i class="legend-ir"></i>IR/NIR</span>
+            </div>
+          </div>
+
+          <div class="latest-values">
+            <span>Red <strong data-right-red>—</strong></span>
+            <span>IR/NIR <strong data-right-ir>—</strong></span>
+          </div>
+
+          <div class="canvas-shell">
+            <canvas
+              id="trace-right"
+              width="1000"
+              height="300"
+              aria-label="Live right raw optical Red and IR/NIR traces"
+            ></canvas>
+            <div class="canvas-watermark">RAW DEVICE UNITS</div>
+          </div>
+        </div>
       </section>
 
-      <section class="panel technical-monitor">
-  <h2>Live Technical Monitor</h2>
+      <section class="sensor-grid">
+        <article class="sensor-card sensor-card-featured">
+          <span>Mendi Sensor Temperature</span>
+          <strong data-temperature>—</strong>
+          <small>Device sensor temperature · not body temperature</small>
+        </article>
 
-  <p class="warning">
-    Technical monitoring only. Values represent device communication,
-    signal quality, and acquisition status. This system does not estimate
-    neural activation, cognition, diagnosis, or clinical state.
-  </p>
+        <article class="sensor-card">
+          <span>Battery Voltage</span>
+          <strong data-battery>—</strong>
+          <small data-battery-detail>waiting for ABB4 telemetry</small>
+        </article>
 
-  <div class="monitor-grid">
+        <article class="sensor-card">
+          <span>Signal State</span>
+          <strong data-quality>NO SIGNAL</strong>
+          <small>Technical acquisition state</small>
+        </article>
 
-    <div class="monitor-card">
-      <span>Elapsed Time</span>
-      <strong data-monitor-elapsed>0</strong>
-      <small>seconds</small>
-    </div>
+        <article class="sensor-card">
+          <span>Decoded Frames</span>
+          <strong data-decoded-frames>0</strong>
+          <small>Validated ABB1 frames</small>
+        </article>
 
-    <div class="monitor-card">
-      <span>Packet Rate</span>
-      <strong data-monitor-rate>0</strong>
-      <small>Hz</small>
-    </div>
-
-    <div class="monitor-card">
-      <span>Signal Quality</span>
-      <strong data-monitor-signal>NO SIGNAL</strong>
-    </div>
-
-    <div class="monitor-card">
-      <span>Left Contact</span>
-      <strong data-monitor-left-contact>
-        unknown
-      </strong>
-    </div>
-
-    <div class="monitor-card">
-      <span>Right Contact</span>
-      <strong data-monitor-right-contact>
-        unknown
-      </strong>
-    </div>
-
-  </div>
-
-
-  <h3>Optical Channel Packet Monitor</h3>
-
-  <div class="channel-grid">
-
-    <div class="channel-card">
-      <span>ABB1</span>
-      <strong data-monitor-abb1>0</strong>
-    </div>
-
-    <div class="channel-card">
-      <span>ABB4</span>
-      <strong data-monitor-abb4>0</strong>
-    </div>
-
-    <div class="channel-card">
-      <span>ABB5</span>
-      <strong data-monitor-abb5>0</strong>
-    </div>
-
-    <div class="channel-card">
-      <span>Unknown</span>
-      <strong data-monitor-unknown>0</strong>
-    </div>
-
-  </div>
-
-
-  <h3>Hardware Status</h3>
-
-  <div class="hardware-grid">
-
-    <div class="monitor-card">
-      <span>IMU</span>
-      <strong data-monitor-imu>
-        NOT AVAILABLE
-      </strong>
-    </div>
-
-
-    <div class="monitor-card">
-      <span>AutoMarker</span>
-      <strong data-monitor-automarker>
-        DISABLED
-      </strong>
-    </div>
-
-
-    <div class="monitor-card">
-      <span>Last Event</span>
-      <strong data-monitor-last-event>
-        NONE
-      </strong>
-    </div>
-
-  </div>
-
-
-  <canvas
-    id="trace"
-    width="1000"
-    height="260"
-    aria-label="Technical signal trace">
-  </canvas>
-
-</section>
-
-      <section class="panel">
-        <h2>Recent Markers</h2>
-        <ol id="markers"></ol>
+        <article class="sensor-card">
+          <span>Raw Packets</span>
+          <strong data-packets>0</strong>
+          <small>All subscribed characteristics</small>
+        </article>
       </section>
 
-      <section id="recovery"></section>
-      <footer>ANR Lab · Research use only · Recorder and Analyzer are separate systems</footer>
+      <details class="panel technical-monitor">
+        <summary>
+          <div>
+            <p class="eyebrow">ADVANCED</p>
+            <h2>Technical Diagnostics</h2>
+          </div>
+          <span class="summary-hint">Packet & hardware details</span>
+        </summary>
+
+        <p class="warning">
+          Technical monitoring only. These values describe device communication
+          and acquisition. The recorder does not estimate HbO/HbR, neural
+          activation, cognition, diagnosis, or clinical state.
+        </p>
+
+        <div class="monitor-grid">
+          <div class="monitor-card">
+            <span>Elapsed Time</span>
+            <strong data-monitor-elapsed>0</strong>
+            <small>seconds</small>
+          </div>
+          <div class="monitor-card">
+            <span>Packet Rate</span>
+            <strong data-monitor-rate>0</strong>
+            <small>Hz</small>
+          </div>
+          <div class="monitor-card">
+            <span>Signal</span>
+            <strong data-monitor-signal>NO SIGNAL</strong>
+          </div>
+          <div class="monitor-card">
+            <span>Left Contact</span>
+            <strong data-monitor-left-contact>unknown</strong>
+          </div>
+          <div class="monitor-card">
+            <span>Right Contact</span>
+            <strong data-monitor-right-contact>unknown</strong>
+          </div>
+        </div>
+
+        <h3>Characteristic Packet Monitor</h3>
+        <div class="channel-grid">
+          <div class="channel-card"><span>ABB1 Frame</span><strong data-monitor-abb1>0</strong></div>
+          <div class="channel-card"><span>ABB4 ADC</span><strong data-monitor-abb4>0</strong></div>
+          <div class="channel-card"><span>ABB5 Diagnostics</span><strong data-monitor-abb5>0</strong></div>
+          <div class="channel-card"><span>Unknown</span><strong data-monitor-unknown>0</strong></div>
+        </div>
+
+        <h3>Raw Head-Movement IMU</h3>
+        <p class="diagnostic-note">
+          Raw accelerometer and gyroscope values from ABB1. These are displayed
+          for acquisition monitoring only; physical units/calibration are not
+          inferred here.
+        </p>
+        <div class="hardware-grid imu-grid">
+          <div class="monitor-card"><span>Accel X</span><strong data-imu-acc-x>—</strong></div>
+          <div class="monitor-card"><span>Accel Y</span><strong data-imu-acc-y>—</strong></div>
+          <div class="monitor-card"><span>Accel Z</span><strong data-imu-acc-z>—</strong></div>
+          <div class="monitor-card"><span>Gyro X</span><strong data-imu-gyro-x>—</strong></div>
+          <div class="monitor-card"><span>Gyro Y</span><strong data-imu-gyro-y>—</strong></div>
+          <div class="monitor-card"><span>Gyro Z</span><strong data-imu-gyro-z>—</strong></div>
+        </div>
+
+        <h3>Hardware & Marker Status</h3>
+        <div class="hardware-grid">
+          <div class="monitor-card">
+            <span>IMU</span>
+            <strong data-monitor-imu>WAITING</strong>
+          </div>
+          <div class="monitor-card">
+            <span>AutoMarker</span>
+            <strong data-monitor-automarker>DISABLED</strong>
+          </div>
+          <div class="monitor-card">
+            <span>Last Event</span>
+            <strong data-monitor-last-event>NONE</strong>
+          </div>
+        </div>
+      </details>
+
+      <section class="panel markers-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">EVENT LOG</p>
+            <h2>Recent Markers</h2>
+          </div>
+        </div>
+        <ol id="markers" class="marker-list"></ol>
+      </section>
+
+      <footer>
+        <div>
+          <strong>African NeuroData Research Lab</strong>
+          <span>Research use only · local browser processing</span>
+        </div>
+        <div>
+          <a href="https://africanneurodataresearch.org/" target="_blank" rel="noreferrer">africanneurodataresearch.org</a>
+          <a href="mailto:anrlab.ng@gmail.com">anrlab.ng@gmail.com</a>
+        </div>
+      </footer>
     </main>
   `;
 }
 
-
-
-export function wireProtocolBuilder(root) {
+export function wireProtocolBuilder(
+  root
+) {
   const addButton =
     root.querySelector("#add-phase");
 
@@ -417,11 +578,12 @@ export function wireProtocolBuilder(root) {
   addButton.addEventListener(
     "click",
     () => {
-      const phases = Array.from(
-        root.querySelectorAll(
-          "[data-protocol-phase]"
-        )
-      );
+      const phases =
+        Array.from(
+          root.querySelectorAll(
+            "[data-protocol-phase]"
+          )
+        );
 
       const template =
         phases.at(-1);
@@ -438,28 +600,45 @@ export function wireProtocolBuilder(root) {
         `phase-${nextNumber}`;
 
       phase
-        .querySelector("[data-phase-name]")
+        .querySelector(
+          "[data-phase-name]"
+        )
         .value = "Custom";
 
       phase
-        .querySelector("[data-phase-type]")
+        .querySelector(
+          "[data-phase-type]"
+        )
         .value = "custom";
 
       phase
-        .querySelector("[data-phase-duration]")
+        .querySelector(
+          "[data-phase-duration]"
+        )
         .value = "60";
 
       phase
-        .querySelector("[data-phase-automarker]")
+        .querySelector(
+          "[data-phase-automarker]"
+        )
         .checked = true;
 
-      addButton.before(phase);
+      const phaseList =
+        root.querySelector(
+          ".phase-list"
+        );
+
+      if (phaseList) {
+        phaseList.appendChild(phase);
+      } else {
+        addButton.before(phase);
+      }
     }
   );
 
   root.addEventListener(
     "change",
-    (event) => {
+    event => {
       const type =
         event.target.closest(
           "[data-phase-type]"
@@ -474,7 +653,9 @@ export function wireProtocolBuilder(root) {
 
       if (!phase) return;
 
-      if (type.value === "get_ready") {
+      if (
+        type.value === "get_ready"
+      ) {
         const autoMarker =
           phase.querySelector(
             "[data-phase-automarker]"
@@ -489,7 +670,7 @@ export function wireProtocolBuilder(root) {
 
   root.addEventListener(
     "click",
-    (event) => {
+    event => {
       const phase =
         event.target.closest(
           "[data-protocol-phase]"
@@ -510,10 +691,11 @@ export function wireProtocolBuilder(root) {
             "[data-protocol-phase]"
           )
         ) {
-          phase.parentElement.insertBefore(
-            phase,
-            previous
-          );
+          phase.parentElement
+            .insertBefore(
+              phase,
+              previous
+            );
         }
 
         return;
@@ -532,10 +714,11 @@ export function wireProtocolBuilder(root) {
             "[data-protocol-phase]"
           )
         ) {
-          phase.parentElement.insertBefore(
-            next,
-            phase
-          );
+          phase.parentElement
+            .insertBefore(
+              next,
+              phase
+            );
         }
 
         return;
@@ -553,12 +736,11 @@ export function wireProtocolBuilder(root) {
 }
 
 export function mountRecorder(root) {
-  root.innerHTML = recorderMarkup();
+  root.innerHTML =
+    recorderMarkup();
+
   wireProtocolBuilder(root);
 }
-
-
-
 
 export function setProtocolBuilderLocked(
   root,
@@ -578,6 +760,7 @@ export function setProtocolBuilderLocked(
     `);
 
   for (const control of controls) {
-    control.disabled = Boolean(locked);
+    control.disabled =
+      Boolean(locked);
   }
 }

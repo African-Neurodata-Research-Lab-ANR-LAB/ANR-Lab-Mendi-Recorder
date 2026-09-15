@@ -1,32 +1,73 @@
-﻿const ACQUISITION_KEYS = ["ABB1", "ABB4", "ABB5"];
-const activeAcquisitions = new WeakMap();
+const ACQUISITION_KEYS = [
+  "ABB1",
+  "ABB4",
+  "ABB5"
+];
 
-export async function startAcquisition(driver, onPacket, options = {}) {
-  if (activeAcquisitions.has(driver)) {
+const activeAcquisitions =
+  new WeakMap();
+
+export async function startAcquisition(
+  driver,
+  onPacket,
+  options = {}
+) {
+  if (
+    activeAcquisitions.has(driver)
+  ) {
     return false;
   }
 
   const subscribed = [];
-  activeAcquisitions.set(driver, subscribed);
 
-  const handlePacket = options.packetInspector
-    ? (packet) => {
-        options.packetInspector.record(packet);
-        onPacket(packet);
-      }
-    : onPacket;
+  activeAcquisitions.set(
+    driver,
+    subscribed
+  );
+
+  const handlePacket =
+    options.packetInspector
+      ? packet => {
+          options.packetInspector
+            .record(packet);
+
+          onPacket(packet);
+        }
+      : onPacket;
 
   try {
-    for (const key of ACQUISITION_KEYS) {
-      await driver.subscribe(key, handlePacket);
+    for (
+      const key of
+      ACQUISITION_KEYS
+    ) {
+      await driver.subscribe(
+        key,
+        handlePacket
+      );
+
       subscribed.push(key);
+    }
+
+    // Some Mendi V4 firmware does not continuously emit ABB1 Frame
+    // notifications until the optical sensor is explicitly enabled via ABB2.
+    // Subscriptions are established first so no initial frame is missed.
+    if (
+      typeof driver.enableSensor ===
+      "function"
+    ) {
+      await driver.enableSensor();
     }
 
     return true;
   } catch (error) {
-    activeAcquisitions.delete(driver);
+    activeAcquisitions.delete(
+      driver
+    );
 
-    for (const key of subscribed.reverse()) {
+    for (
+      const key of
+      subscribed.slice().reverse()
+    ) {
       try {
         await driver.unsubscribe(key);
       } catch {
@@ -39,14 +80,21 @@ export async function startAcquisition(driver, onPacket, options = {}) {
   }
 }
 
-export async function stopAcquisition(driver) {
-  const subscribed = activeAcquisitions.get(driver) ?? [];
+export async function stopAcquisition(
+  driver
+) {
+  const subscribed =
+    activeAcquisitions.get(driver) ??
+    [];
 
   activeAcquisitions.delete(driver);
 
   let firstError = null;
 
-  for (const key of subscribed.slice().reverse()) {
+  for (
+    const key of
+    subscribed.slice().reverse()
+  ) {
     try {
       await driver.unsubscribe(key);
     } catch (error) {
@@ -59,7 +107,10 @@ export async function stopAcquisition(driver) {
   }
 }
 
-export async function handleAcquisitionDisconnect(driver, options = {}) {
+export async function handleAcquisitionDisconnect(
+  driver,
+  options = {}
+) {
   await stopAcquisition(driver);
   options.onDisconnected?.();
 }

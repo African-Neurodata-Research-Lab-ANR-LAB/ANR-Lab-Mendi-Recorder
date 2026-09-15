@@ -4,17 +4,28 @@ import {
   DEVICE_INFORMATION_UUIDS,
   PROTOCOL_LIMITATIONS
 } from "./gatt-profile.js";
-import { RecorderError, ERROR_CODES } from "../app/errors.js";
-import { CharacteristicManager } from "./characteristic-manager.js";
-import { NotificationStream } from "./notification-stream.js";
+import {
+  RecorderError,
+  ERROR_CODES
+} from "../app/errors.js";
+import {
+  CharacteristicManager
+} from "./characteristic-manager.js";
+import {
+  NotificationStream
+} from "./notification-stream.js";
 
 export class MendiDriver {
-  constructor(bluetooth = globalThis.navigator?.bluetooth) {
+  constructor(
+    bluetooth =
+      globalThis.navigator?.bluetooth
+  ) {
     this.bluetooth = bluetooth;
     this.device = null;
     this.server = null;
     this.characteristics = null;
-    this.stream = new NotificationStream();
+    this.stream =
+      new NotificationStream();
   }
 
   async connect() {
@@ -26,20 +37,40 @@ export class MendiDriver {
     }
 
     try {
-      this.device = await this.bluetooth.requestDevice({
-        filters: [{ services: [MENDI_SERVICE_UUID] }]
-      });
-      this.device.addEventListener("gattserverdisconnected", () => {
-        this.onDisconnected?.();
-      });
-      this.server = await this.device.gatt.connect();
+      this.device =
+        await this.bluetooth.requestDevice({
+          filters: [
+            {
+              services: [
+                MENDI_SERVICE_UUID
+              ]
+            }
+          ]
+        });
 
-      const manager = new CharacteristicManager({
-        serviceUuid: MENDI_SERVICE_UUID,
-        characteristics: MENDI_CHARACTERISTICS
-      });
+      this.device.addEventListener(
+        "gattserverdisconnected",
+        () => {
+          this.onDisconnected?.();
+        }
+      );
 
-      this.characteristics = await manager.discover(this.server);
+      this.server =
+        await this.device.gatt.connect();
+
+      const manager =
+        new CharacteristicManager({
+          serviceUuid:
+            MENDI_SERVICE_UUID,
+          characteristics:
+            MENDI_CHARACTERISTICS
+        });
+
+      this.characteristics =
+        await manager.discover(
+          this.server
+        );
+
       return this.device;
     } catch (error) {
       throw new RecorderError(
@@ -62,7 +93,8 @@ export class MendiDriver {
       await this.device.gatt.connect();
 
     if (
-      typeof this.server?.getPrimaryService ===
+      typeof this.server
+        ?.getPrimaryService ===
       "function"
     ) {
       const manager =
@@ -83,52 +115,145 @@ export class MendiDriver {
   }
 
   async disconnect() {
-    if (this.device?.gatt?.connected) this.device.gatt.disconnect();
+    if (this.device?.gatt?.connected) {
+      this.device.gatt.disconnect();
+    }
+
     this.server = null;
   }
 
   async readDeviceInfo() {
-    const service = await this.server.getPrimaryService(
-      "0000180a-0000-1000-8000-00805f9b34fb"
-    );
-
-    const read = async (uuid) => {
-      try {
-        const c = await service.getCharacteristic(
-          `0000${uuid}-0000-1000-8000-00805f9b34fb`
+    const service =
+      await this.server
+        .getPrimaryService(
+          "0000180a-0000-1000-8000-00805f9b34fb"
         );
-        const value = await c.readValue();
-        return new TextDecoder().decode(value);
+
+    const read = async uuid => {
+      try {
+        const characteristic =
+          await service
+            .getCharacteristic(
+              `0000${uuid}-0000-1000-8000-00805f9b34fb`
+            );
+
+        const value =
+          await characteristic
+            .readValue();
+
+        return new TextDecoder()
+          .decode(value);
       } catch {
         return null;
       }
     };
 
     return {
-      firmware: await read(DEVICE_INFORMATION_UUIDS.firmware),
-      hardware: await read(DEVICE_INFORMATION_UUIDS.hardware),
-      manufacturer: await read(DEVICE_INFORMATION_UUIDS.manufacturer),
-      testedHardware: PROTOCOL_LIMITATIONS
+      firmware:
+        await read(
+          DEVICE_INFORMATION_UUIDS
+            .firmware
+        ),
+      hardware:
+        await read(
+          DEVICE_INFORMATION_UUIDS
+            .hardware
+        ),
+      manufacturer:
+        await read(
+          DEVICE_INFORMATION_UUIDS
+            .manufacturer
+        ),
+      testedHardware:
+        PROTOCOL_LIMITATIONS
     };
   }
 
   getCharacteristic(key) {
-    return this.characteristics?.get(key);
+    return this.characteristics
+      ?.get(key);
   }
 
-  async subscribe(key, callback) {
-    const characteristic = this.getCharacteristic(key);
+  /**
+   * Request continuous optical sensor frames on Mendi firmware that requires
+   * the documented ABB2 Sensor(read=true, address=0, data=0) command.
+   * Protobuf encoding for that message is two bytes: 0x08 0x01.
+   */
+  async enableSensor() {
+    const characteristic =
+      this.getCharacteristic("ABB2");
+
     if (!characteristic) {
       throw new RecorderError(
-        ERROR_CODES.CHARACTERISTIC_UNAVAILABLE,
+        ERROR_CODES
+          .CHARACTERISTIC_UNAVAILABLE,
+        "ABB2 sensor control is not available on this device."
+      );
+    }
+
+    const payload =
+      Uint8Array.from([8, 1]);
+
+    if (
+      typeof characteristic
+        .writeValueWithResponse ===
+      "function"
+    ) {
+      await characteristic
+        .writeValueWithResponse(
+          payload
+        );
+
+      return true;
+    }
+
+    // Older Web Bluetooth implementations may expose writeValue() only.
+    // It maps to a GATT write with response when the characteristic supports it.
+    if (
+      typeof characteristic
+        .writeValue === "function"
+    ) {
+      await characteristic
+        .writeValue(payload);
+
+      return true;
+    }
+
+    throw new RecorderError(
+      ERROR_CODES.PROTOCOL_UNSUPPORTED,
+      "ABB2 does not expose a supported write-with-response method."
+    );
+  }
+
+  async subscribe(
+    key,
+    callback
+  ) {
+    const characteristic =
+      this.getCharacteristic(key);
+
+    if (!characteristic) {
+      throw new RecorderError(
+        ERROR_CODES
+          .CHARACTERISTIC_UNAVAILABLE,
         `${key} is not available on this device.`
       );
     }
-    await this.stream.subscribe(characteristic, callback);
+
+    await this.stream.subscribe(
+      characteristic,
+      callback
+    );
   }
 
   async unsubscribe(key) {
-    const characteristic = this.getCharacteristic(key);
-    if (characteristic) await this.stream.unsubscribe(characteristic);
+    const characteristic =
+      this.getCharacteristic(key);
+
+    if (characteristic) {
+      await this.stream.unsubscribe(
+        characteristic
+      );
+    }
   }
 }
