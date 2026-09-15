@@ -317,3 +317,26 @@ it("unlocks protocol builder controls after the active protocol ends", async () 
     expect(control.disabled).toBe(false);
   }
 });
+
+it("renders the protocol session dashboard fields", () => {
+  const root = document.createElement("div");
+  root.innerHTML = recorderMarkup();
+
+  const selectors = [
+    "[data-session-clock]",
+    "[data-protocol-clock]",
+    "[data-session-status]",
+    "[data-current-phase]",
+    "[data-current-phase-type]",
+    "[data-phase-remaining]",
+    "[data-current-cycle]",
+    "[data-total-cycles]",
+    "[data-next-phase]"
+  ];
+
+  for (const selector of selectors) {
+    expect(
+      root.querySelector(selector)
+    ).not.toBeNull();
+  }
+});

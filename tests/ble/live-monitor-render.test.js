@@ -149,7 +149,7 @@ it("renders Session and Protocol clocks with active phase context", () => {
     <div data-protocol-clock></div>
     <div data-session-status></div>
     <div data-current-phase></div>
-    <div data-phase-type></div>
+    <div data-current-phase-type></div>
     <div data-phase-remaining></div>
     <div data-current-cycle></div>
     <div data-total-cycles></div>
@@ -189,7 +189,7 @@ it("renders Session and Protocol clocks with active phase context", () => {
   ).toBe("Task");
 
   expect(
-    root.querySelector("[data-phase-type]").textContent
+    root.querySelector("[data-current-phase-type]").textContent
   ).toBe("task");
 
   expect(

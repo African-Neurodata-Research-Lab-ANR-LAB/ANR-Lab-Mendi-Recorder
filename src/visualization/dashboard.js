@@ -1,4 +1,4 @@
-﻿function formatClock(value) {
+function formatClock(value) {
   const totalSeconds = Math.max(
     0,
     Math.floor(Number(value) || 0)
@@ -88,7 +88,7 @@ export function renderDashboard(root, state) {
   );
 
   setText(
-    "[data-phase-type]",
+    "[data-current-phase-type]",
     experiment.phaseType ?? "-"
   );
 

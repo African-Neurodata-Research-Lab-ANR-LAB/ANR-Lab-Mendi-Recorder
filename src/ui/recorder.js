@@ -1,4 +1,4 @@
-﻿export function recorderMarkup() {
+export function recorderMarkup() {
   return `
     <main class="shell">
       <header>
@@ -227,6 +227,55 @@
         </form>
       </section>
 
+      <section class="panel protocol-dashboard">
+        <h2>Protocol Session</h2>
+
+        <div class="protocol-session-grid">
+          <div>
+            <span>Session Clock</span>
+            <strong data-session-clock>00:00:00</strong>
+          </div>
+
+          <div>
+            <span>Protocol Clock</span>
+            <strong data-protocol-clock>00:00:00</strong>
+          </div>
+
+          <div>
+            <span>Status</span>
+            <strong data-session-status>idle</strong>
+          </div>
+
+          <div>
+            <span>Current Phase</span>
+            <strong data-current-phase>-</strong>
+          </div>
+
+          <div>
+            <span>Phase Type</span>
+            <strong data-current-phase-type>-</strong>
+          </div>
+
+          <div>
+            <span>Time Remaining</span>
+            <strong data-phase-remaining>00:00</strong>
+          </div>
+
+          <div>
+            <span>Cycle</span>
+            <strong>
+              <span data-current-cycle>-</span>
+              /
+              <span data-total-cycles>-</span>
+            </strong>
+          </div>
+
+          <div>
+            <span>Next Phase</span>
+            <strong data-next-phase>-</strong>
+          </div>
+        </div>
+      </section>
       <section class="metrics">
         <div><span>Recording</span><strong data-recording>idle</strong></div>
         <div><span>Packets</span><strong data-packets>0</strong></div>
