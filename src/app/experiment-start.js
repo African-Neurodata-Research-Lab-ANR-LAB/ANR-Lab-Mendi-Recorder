@@ -28,3 +28,20 @@ export function startPreparedExperiment({
 
   return engine;
 }
+
+export function completePreparedExperiment({
+  experimentEngine,
+  state,
+  root,
+  setProtocolBuilderLocked
+}) {
+  experimentEngine?.stop();
+
+  state.sessionStatus =
+    "completed";
+
+  setProtocolBuilderLocked?.(
+    root,
+    false
+  );
+}

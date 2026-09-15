@@ -282,3 +282,38 @@ it("locks all protocol builder controls when the active protocol is locked", asy
     expect(control.disabled).toBe(true);
   }
 });
+
+it("unlocks protocol builder controls after the active protocol ends", async () => {
+  const ui = await import("../../src/ui/recorder.js");
+
+  const root = document.createElement("div");
+  ui.mountRecorder(root);
+
+  ui.setProtocolBuilderLocked(
+    root,
+    true
+  );
+
+  ui.setProtocolBuilderLocked(
+    root,
+    false
+  );
+
+  const controls = root.querySelectorAll(`
+    [data-phase-name],
+    [data-phase-type],
+    [data-phase-duration],
+    [data-phase-automarker],
+    [data-phase-up],
+    [data-phase-down],
+    [data-phase-remove],
+    #add-phase,
+    [name="repeatCount"],
+    [name="autoMarkerEnabled"],
+    [name="autoMarkerIntervalSeconds"]
+  `);
+
+  for (const control of controls) {
+    expect(control.disabled).toBe(false);
+  }
+});

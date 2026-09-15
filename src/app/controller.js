@@ -4,7 +4,8 @@ import {
 } from "./state.js";
 
 import {
-  startPreparedExperiment
+  startPreparedExperiment,
+  completePreparedExperiment
 } from "./experiment-start.js";
 import {
   startAcquisition,
