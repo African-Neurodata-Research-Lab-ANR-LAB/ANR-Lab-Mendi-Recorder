@@ -185,3 +185,34 @@ it("preserves an invalid repeat count so validation can reject it", () => {
     data.protocol.repeatCount
   ).toBe(0);
 });
+
+it("rejects a non-positive AutoMarker interval when AutoMarker is enabled", () => {
+  const data = {
+    participantCode: "P001",
+    sessionCode: "S001",
+    protocol: {
+      repeatCount: 1,
+      phases: [
+        {
+          id: "phase-1",
+          name: "Baseline",
+          type: "baseline",
+          durationSeconds: 30,
+          autoMarkerEnabled: true
+        }
+      ]
+    },
+    autoMarker: {
+      enabled: true,
+      intervalSeconds: 0
+    }
+  };
+
+  const errors = validateSetup(data);
+
+  expect(
+    errors.some(error =>
+      error.toLowerCase().includes("automarker")
+    )
+  ).toBe(true);
+});

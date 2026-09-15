@@ -122,6 +122,24 @@ export function validateSetup(data) {
     }
   }
 
+  if (
+    data.autoMarker?.enabled === true
+  ) {
+    const intervalSeconds =
+      Number(
+        data.autoMarker.intervalSeconds
+      );
+
+    if (
+      !Number.isFinite(intervalSeconds) ||
+      intervalSeconds <= 0
+    ) {
+      errors.push(
+        "AutoMarker interval must be greater than 0 seconds when AutoMarker is enabled."
+      );
+    }
+  }
+
   for (
     const value of [
       data.participantCode,
@@ -137,6 +155,7 @@ export function validateSetup(data) {
 
   return errors;
 }
+
 
 
 
