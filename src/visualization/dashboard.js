@@ -162,6 +162,62 @@ export function renderDashboard(root, state) {
     "[data-monitor-last-event]",
     automarker.lastEvent ?? "NONE"
   );
+  const recovery =
+    root.querySelector("#recovery");
+
+  if (recovery) {
+    if (
+      state.sessionStatus ===
+      "paused_disconnected"
+    ) {
+      recovery.innerHTML = `
+        <section class="panel recovery-panel">
+          <h2>Session Paused</h2>
+          <p><strong>Mendi disconnected</strong></p>
+          <p>Waiting for device reconnection...</p>
+          <p>No automatic timeout</p>
+          <div class="actions">
+            <button
+              type="button"
+              data-recovery-reconnect
+            >
+              Reconnect Mendi
+            </button>
+            <button
+              type="button"
+              data-recovery-end
+            >
+              End Session
+            </button>
+          </div>
+        </section>
+      `;
+
+      recovery
+        .querySelector(
+          "[data-recovery-reconnect]"
+        )
+        ?.addEventListener(
+          "click",
+          () =>
+            root
+              .querySelector("#reconnect")
+              ?.click()
+        );
+
+      recovery
+        .querySelector(
+          "[data-recovery-end]"
+        )
+        ?.addEventListener(
+          "click",
+          () =>
+            root
+              .querySelector("#stop")
+              ?.click()
+        );
+    } else {
+      recovery.innerHTML = "";
+    }
+  }
 }
-
-
