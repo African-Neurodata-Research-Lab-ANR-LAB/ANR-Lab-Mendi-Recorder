@@ -159,3 +159,36 @@ export function resumePreparedRecordingAfterReconnect({
   state.recording =
     "recording";
 }
+
+export function abortPreparedExperiment({
+  session,
+  experimentEngine,
+  state,
+  root,
+  setProtocolBuilderLocked
+}) {
+  experimentEngine?.stop();
+
+  session.addMarker(
+    "PROTOCOL_ABORTED",
+    "system"
+  );
+
+  session.addMarker(
+    "SESSION_END",
+    "system"
+  );
+
+  session.stop();
+
+  state.sessionStatus =
+    "completed";
+
+  state.recording =
+    "stopped";
+
+  setProtocolBuilderLocked?.(
+    root,
+    false
+  );
+}

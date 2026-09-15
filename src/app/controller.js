@@ -9,7 +9,8 @@ import {
   refreshPreparedRecording,
   requestProtocolCompletion,
   pausePreparedRecordingOnDisconnect,
-  resumePreparedRecordingAfterReconnect
+  resumePreparedRecordingAfterReconnect,
+  abortPreparedExperiment
 } from "./experiment-start.js";
 import {
   startAcquisition,
@@ -568,22 +569,34 @@ async ()=>{
 
 
 
-  session.stop();
+  if (
+    state.sessionStatus ===
+    "stopping"
+  ) {
+    session.stop();
 
-  completePreparedExperiment({
-    experimentEngine,
-    state,
-    root,
-    setProtocolBuilderLocked
-  });
+    completePreparedExperiment({
+      experimentEngine,
+      state,
+      root,
+      setProtocolBuilderLocked
+    });
+
+    state.recording =
+      "stopped";
+  } else {
+    abortPreparedExperiment({
+      session,
+      experimentEngine,
+      state,
+      root,
+      setProtocolBuilderLocked
+    });
+  }
 
   experimentEngine = null;
 
   stopMonitorTimer();
-
-
-state.recording =
-  "stopped";
 
 
   checkpoint.save(
