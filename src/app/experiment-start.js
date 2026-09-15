@@ -1,9 +1,10 @@
-import {
+﻿import {
   ExperimentEngine
 } from "../markers/experiment-engine.js";
 
 import {
-  buildExperimentStartConfig
+  buildExperimentStartConfig,
+  syncExperimentState
 } from "./state.js";
 
 export function startPreparedExperiment({
@@ -44,4 +45,91 @@ export function completePreparedExperiment({
     root,
     false
   );
+}
+
+export function beginPreparedRecording({
+  session,
+  preparedSetup,
+  state,
+  root,
+  setProtocolBuilderLocked,
+  setIntervalFn = globalThis.setInterval,
+  clearIntervalFn = globalThis.clearInterval
+}) {
+  session.start(
+    preparedSetup
+  );
+
+  const engine =
+    startPreparedExperiment({
+      session,
+      preparedSetup,
+      setIntervalFn,
+      clearIntervalFn
+    });
+
+  syncExperimentState(
+    state,
+    engine.getState(),
+    preparedSetup
+  );
+
+  state.sessionStatus =
+    "recording";
+
+  state.recording =
+    "recording";
+
+  setProtocolBuilderLocked?.(
+    root,
+    true
+  );
+
+  return engine;
+}
+
+export function refreshPreparedRecording({
+  experimentEngine,
+  state,
+  preparedSetup
+}) {
+  if (!experimentEngine) {
+    return false;
+  }
+
+  const engineState =
+    experimentEngine.getState();
+
+  syncExperimentState(
+    state,
+    engineState,
+    preparedSetup
+  );
+
+  return (
+    engineState.protocol?.completed === true
+  );
+}
+
+export function requestProtocolCompletion({
+  completed,
+  state,
+  stopAction
+}) {
+  if (
+    completed !== true ||
+    state.recording !== "recording"
+  ) {
+    return false;
+  }
+
+  state.recording =
+    "stopping";
+
+  state.sessionStatus =
+    "stopping";
+
+  stopAction?.();
+
+  return true;
 }

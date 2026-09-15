@@ -4,8 +4,10 @@ import {
 } from "./state.js";
 
 import {
-  startPreparedExperiment,
-  completePreparedExperiment
+  beginPreparedRecording,
+  completePreparedExperiment,
+  refreshPreparedRecording,
+  requestProtocolCompletion
 } from "./experiment-start.js";
 import {
   startAcquisition,
@@ -99,10 +101,28 @@ function startMonitorTimer() {
     }
 
 
+    const completed =
+      refreshPreparedRecording({
+        experimentEngine,
+        state,
+        preparedSetup:
+          preparedMetadata
+      });
+
     state.monitor.elapsedSeconds =
       Math.floor(
-        (Date.now() - monitorStartTime) / 1000
+        state.experiment
+          .sessionSeconds
       );
+
+    requestProtocolCompletion({
+      completed,
+      state,
+      stopAction: () =>
+        root
+          .querySelector("#stop")
+          ?.click()
+    });
 
 
     render();
@@ -425,13 +445,14 @@ if (opticalSample) {
 
 
 
-    session.start(
-      preparedMetadata
-    );
-
-
-    state.recording =
-  "recording";
+    experimentEngine =
+      beginPreparedRecording({
+        session,
+        preparedSetup: preparedMetadata,
+        state,
+        root,
+        setProtocolBuilderLocked
+      });
 
 
 startMonitorTimer();
@@ -493,8 +514,16 @@ async ()=>{
 
   session.stop();
 
+  completePreparedExperiment({
+    experimentEngine,
+    state,
+    root,
+    setProtocolBuilderLocked
+  });
 
-stopMonitorTimer();
+  experimentEngine = null;
+
+  stopMonitorTimer();
 
 
 state.recording =
