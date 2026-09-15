@@ -408,6 +408,36 @@ export function wireProtocolBuilder(root) {
   );
 
   root.addEventListener(
+    "change",
+    (event) => {
+      const type =
+        event.target.closest(
+          "[data-phase-type]"
+        );
+
+      if (!type) return;
+
+      const phase =
+        type.closest(
+          "[data-protocol-phase]"
+        );
+
+      if (!phase) return;
+
+      if (type.value === "get_ready") {
+        const autoMarker =
+          phase.querySelector(
+            "[data-phase-automarker]"
+          );
+
+        if (autoMarker) {
+          autoMarker.checked = false;
+        }
+      }
+    }
+  );
+
+  root.addEventListener(
     "click",
     (event) => {
       const phase =
@@ -476,5 +506,6 @@ export function mountRecorder(root) {
   root.innerHTML = recorderMarkup();
   wireProtocolBuilder(root);
 }
+
 
 

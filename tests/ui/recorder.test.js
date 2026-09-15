@@ -218,3 +218,35 @@ it("reorders protocol phases with Move Up and Move Down", async () => {
       .value
   ).toBe("Baseline");
 });
+
+it("turns AutoMarker off when a phase is changed to Get Ready", async () => {
+  const ui = await import("../../src/ui/recorder.js");
+
+  const root = document.createElement("div");
+  ui.mountRecorder(root);
+
+  root
+    .querySelector("#add-phase")
+    .click();
+
+  const phases = Array.from(
+    root.querySelectorAll(
+      "[data-protocol-phase]"
+    )
+  );
+
+  const phase = phases.at(-1);
+  const type =
+    phase.querySelector("[data-phase-type]");
+  const autoMarker =
+    phase.querySelector("[data-phase-automarker]");
+
+  expect(autoMarker.checked).toBe(true);
+
+  type.value = "get_ready";
+  type.dispatchEvent(
+    new Event("change", { bubbles: true })
+  );
+
+  expect(autoMarker.checked).toBe(false);
+});
