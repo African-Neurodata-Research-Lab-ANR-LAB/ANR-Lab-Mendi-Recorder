@@ -1,5 +1,4 @@
-﻿
-// @vitest-environment node
+﻿// @vitest-environment node
 
 import {
   expect,
@@ -34,8 +33,8 @@ it("wires the reconnect control to acquisition recovery and protocol resume", ()
 
   expect(
     source
-  ).toContain(
-    "resumePreparedRecordingAfterReconnect"
+  ).toMatch(
+    /import\s*\{[\s\S]*resumePreparedRecordingAfterReconnect[\s\S]*\}\s*from\s*"\.\/experiment-start\.js"/
   );
 
   expect(

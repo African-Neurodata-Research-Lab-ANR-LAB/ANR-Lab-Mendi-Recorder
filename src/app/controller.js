@@ -8,7 +8,8 @@ import {
   completePreparedExperiment,
   refreshPreparedRecording,
   requestProtocolCompletion,
-  pausePreparedRecordingOnDisconnect
+  pausePreparedRecordingOnDisconnect,
+  resumePreparedRecordingAfterReconnect
 } from "./experiment-start.js";
 import {
   startAcquisition,

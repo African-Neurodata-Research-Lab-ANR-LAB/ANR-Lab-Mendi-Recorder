@@ -5,7 +5,7 @@ export function recorderMarkup() {
         <div>
           <p class="eyebrow">AFRICAN NEURODATA RESEARCH LAB</p>
           <h1>ANR Lab Mendi Recorder</h1>
-          <p>Research acquisition only ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· raw-first ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· local processing</p>
+          <p>Research acquisition only · raw-first · local processing</p>
         </div>
         <div class="status-card">
           <span>Device</span>
@@ -281,7 +281,7 @@ export function recorderMarkup() {
         <div><span>Recording</span><strong data-recording>idle</strong></div>
         <div><span>Packets</span><strong data-packets>0</strong></div>
         <div><span>Quality</span><strong data-quality>NO SIGNAL</strong></div>
-        <div><span>Battery</span><strong data-battery>ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â</strong></div>
+        <div><span>Battery</span><strong data-battery>—</strong></div>
       </section>
 
       <section class="panel technical-monitor">
@@ -401,7 +401,7 @@ export function recorderMarkup() {
       </section>
 
       <section id="recovery"></section>
-      <footer>ANR Lab ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· Research use only ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· Recorder and Analyzer are separate systems</footer>
+      <footer>ANR Lab · Research use only · Recorder and Analyzer are separate systems</footer>
     </main>
   `;
 }
