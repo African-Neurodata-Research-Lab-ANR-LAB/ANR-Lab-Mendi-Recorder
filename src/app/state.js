@@ -107,3 +107,73 @@ export function createState() {
   };
 }
 
+
+export function buildExperimentStartConfig(
+  preparedSetup
+) {
+  return {
+    protocol: preparedSetup.protocol,
+
+    autoMarkerIntervalSeconds:
+      preparedSetup.autoMarker?.enabled === true
+        ? Number(
+            preparedSetup.autoMarker
+              .intervalSeconds
+          )
+        : 0
+  };
+}
+
+export function syncExperimentState(
+  state,
+  engineState,
+  preparedSetup
+) {
+  const protocol =
+    engineState?.protocol ?? {};
+
+  const protocolClock =
+    engineState?.protocolClock ?? {};
+
+  state.experiment = {
+    ...state.experiment,
+
+    sessionSeconds:
+      Number(
+        protocolClock.sessionSeconds
+      ) || 0,
+
+    protocolSeconds:
+      Number(
+        protocolClock.protocolSeconds
+      ) || 0,
+
+    phaseName:
+      protocol.phaseName ?? null,
+
+    phaseType:
+      protocol.phaseType ?? null,
+
+    phaseElapsedSeconds:
+      Number(
+        protocol.phaseElapsedSeconds
+      ) || 0,
+
+    phaseRemainingSeconds:
+      Number(
+        protocol.phaseRemainingSeconds
+      ) || 0,
+
+    cycle:
+      protocol.cycle ?? null,
+
+    totalCycles:
+      preparedSetup?.protocol
+        ?.repeatCount ?? null,
+
+    nextPhaseName:
+      protocol.nextPhaseName ?? null
+  };
+
+  return state.experiment;
+}

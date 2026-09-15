@@ -1,4 +1,11 @@
-﻿import { createState } from "./state.js";
+import {
+  createState,
+  syncExperimentState
+} from "./state.js";
+
+import {
+  startPreparedExperiment
+} from "./experiment-start.js";
 import {
   startAcquisition,
   stopAcquisition,
@@ -56,6 +63,7 @@ const traceBuffer = new LiveTraceBuffer(500);
 
 
 let session = new Session();
+let experimentEngine = null;
 
 let preparedMetadata = null;
 
@@ -737,4 +745,3 @@ async ()=>{
 
 
 render();
-
