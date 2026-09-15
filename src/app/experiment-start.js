@@ -133,3 +133,29 @@ export function requestProtocolCompletion({
 
   return true;
 }
+
+export function pausePreparedRecordingOnDisconnect({
+  experimentEngine,
+  state
+}) {
+  experimentEngine?.pause();
+
+  state.sessionStatus =
+    "paused_disconnected";
+
+  state.recording =
+    "recording";
+}
+
+export function resumePreparedRecordingAfterReconnect({
+  experimentEngine,
+  state
+}) {
+  experimentEngine?.resume();
+
+  state.sessionStatus =
+    "recording";
+
+  state.recording =
+    "recording";
+}

@@ -50,6 +50,38 @@ export class MendiDriver {
     }
   }
 
+  async reconnect() {
+    if (!this.device?.gatt) {
+      throw new RecorderError(
+        ERROR_CODES.GATT_UNAVAILABLE,
+        "No previously authorized Mendi device is available."
+      );
+    }
+
+    this.server =
+      await this.device.gatt.connect();
+
+    if (
+      typeof this.server?.getPrimaryService ===
+      "function"
+    ) {
+      const manager =
+        new CharacteristicManager({
+          serviceUuid:
+            MENDI_SERVICE_UUID,
+          characteristics:
+            MENDI_CHARACTERISTICS
+        });
+
+      this.characteristics =
+        await manager.discover(
+          this.server
+        );
+    }
+
+    return this.device;
+  }
+
   async disconnect() {
     if (this.device?.gatt?.connected) this.device.gatt.disconnect();
     this.server = null;

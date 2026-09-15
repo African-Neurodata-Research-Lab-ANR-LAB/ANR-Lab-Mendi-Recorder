@@ -63,3 +63,17 @@ export async function handleAcquisitionDisconnect(driver, options = {}) {
   await stopAcquisition(driver);
   options.onDisconnected?.();
 }
+
+export async function reconnectAcquisition(
+  driver,
+  onPacket,
+  options = {}
+) {
+  await driver.reconnect();
+
+  return startAcquisition(
+    driver,
+    onPacket,
+    options
+  );
+}

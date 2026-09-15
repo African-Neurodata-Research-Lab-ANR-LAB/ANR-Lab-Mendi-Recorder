@@ -7,12 +7,14 @@ import {
   beginPreparedRecording,
   completePreparedExperiment,
   refreshPreparedRecording,
-  requestProtocolCompletion
+  requestProtocolCompletion,
+  pausePreparedRecordingOnDisconnect
 } from "./experiment-start.js";
 import {
   startAcquisition,
   stopAcquisition,
-  handleAcquisitionDisconnect
+  handleAcquisitionDisconnect,
+  reconnectAcquisition
 } from "./acquisition.js";
 
 import { MendiDriver } from "../ble/mendi-driver.js";
@@ -72,6 +74,7 @@ let session = new Session();
 let experimentEngine = null;
 
 let preparedMetadata = null;
+let acquisitionPacketHandler = null;
 
 
 // Live monitor elapsed timer
@@ -329,6 +332,56 @@ async ()=>{
 
 
 root
+.querySelector("#reconnect")
+.onclick =
+async ()=>{
+  if (
+    state.sessionStatus !==
+    "paused_disconnected"
+  ) return;
+
+  try {
+    await reconnectAcquisition(
+      driver,
+      acquisitionPacketHandler,
+      {
+        packetInspector
+      }
+    );
+
+    state.connection =
+      "connected";
+
+    session.addMarker(
+      "DEVICE_RECONNECTED",
+      "system"
+    );
+
+    resumePreparedRecordingAfterReconnect({
+      experimentEngine,
+      state
+    });
+
+    checkpoint.save(
+      session.snapshot()
+    );
+
+    render();
+
+  } catch(error) {
+    state.connection =
+      "disconnected";
+
+    state.error =
+      error.message;
+
+    alert(error.message);
+
+    render();
+  }
+};
+
+root
 .querySelector("#start")
 .onclick =
 async ()=>{
@@ -404,6 +457,8 @@ if (opticalSample) {
     render();
 
   };
+
+  acquisitionPacketHandler = onPacket;
 
 
 
@@ -709,11 +764,10 @@ async ()=>{
             );
 
 
-            session.stop();
-
-
-            state.recording =
-              "idle";
+            pausePreparedRecordingOnDisconnect({
+              experimentEngine,
+              state
+            });
 
 
             checkpoint.save(
@@ -755,11 +809,10 @@ async ()=>{
       );
 
 
-      session.stop();
-
-
-      state.recording =
-        "idle";
+      pausePreparedRecordingOnDisconnect({
+              experimentEngine,
+              state
+            });
 
 
       checkpoint.save(

@@ -5,7 +5,7 @@ export function recorderMarkup() {
         <div>
           <p class="eyebrow">AFRICAN NEURODATA RESEARCH LAB</p>
           <h1>ANR Lab Mendi Recorder</h1>
-          <p>Research acquisition only Ã‚Â· raw-first Ã‚Â· local processing</p>
+          <p>Research acquisition only ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· raw-first ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· local processing</p>
         </div>
         <div class="status-card">
           <span>Device</span>
@@ -220,6 +220,7 @@ export function recorderMarkup() {
           <div class="actions">
             <button type="submit">Prepare Session</button>
             <button type="button" id="connect">Connect Mendi</button>
+            <button type="button" id="reconnect">Reconnect Mendi</button>
             <button type="button" id="start">Start Recording</button>
             <button type="button" id="stop">Stop Recording</button>
             <button type="button" id="marker">Add Marker</button>
@@ -280,7 +281,7 @@ export function recorderMarkup() {
         <div><span>Recording</span><strong data-recording>idle</strong></div>
         <div><span>Packets</span><strong data-packets>0</strong></div>
         <div><span>Quality</span><strong data-quality>NO SIGNAL</strong></div>
-        <div><span>Battery</span><strong data-battery>Ã¢â‚¬â€</strong></div>
+        <div><span>Battery</span><strong data-battery>ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â</strong></div>
       </section>
 
       <section class="panel technical-monitor">
@@ -400,7 +401,7 @@ export function recorderMarkup() {
       </section>
 
       <section id="recovery"></section>
-      <footer>ANR Lab Ã‚Â· Research use only Ã‚Â· Recorder and Analyzer are separate systems</footer>
+      <footer>ANR Lab ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· Research use only ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· Recorder and Analyzer are separate systems</footer>
     </main>
   `;
 }
