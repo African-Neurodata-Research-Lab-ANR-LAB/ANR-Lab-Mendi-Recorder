@@ -26,7 +26,10 @@ import { eventsTsv } from "../export/tsv.js";
 import { buildMetadata } from "../export/metadata.js";
 import { createSnirf } from "../export/snirf.js";
 
-import { mountRecorder } from "../ui/recorder.js";
+import {
+  mountRecorder,
+  setProtocolBuilderLocked
+} from "../ui/recorder.js";
 import {
   readSetupForm,
   validateSetup

@@ -250,3 +250,35 @@ it("turns AutoMarker off when a phase is changed to Get Ready", async () => {
 
   expect(autoMarker.checked).toBe(false);
 });
+
+it("locks all protocol builder controls when the active protocol is locked", async () => {
+  const ui = await import("../../src/ui/recorder.js");
+
+  const root = document.createElement("div");
+  ui.mountRecorder(root);
+
+  ui.setProtocolBuilderLocked?.(
+    root,
+    true
+  );
+
+  const controls = root.querySelectorAll(`
+    [data-phase-name],
+    [data-phase-type],
+    [data-phase-duration],
+    [data-phase-automarker],
+    [data-phase-up],
+    [data-phase-down],
+    [data-phase-remove],
+    #add-phase,
+    [name="repeatCount"],
+    [name="autoMarkerEnabled"],
+    [name="autoMarkerIntervalSeconds"]
+  `);
+
+  expect(controls.length).toBeGreaterThan(0);
+
+  for (const control of controls) {
+    expect(control.disabled).toBe(true);
+  }
+});

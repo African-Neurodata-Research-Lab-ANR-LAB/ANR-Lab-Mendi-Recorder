@@ -509,3 +509,25 @@ export function mountRecorder(root) {
 
 
 
+
+export function setProtocolBuilderLocked(
+  root,
+  locked
+) {
+  if (!root) return;
+
+  const controls =
+    root.querySelectorAll(`
+      [data-protocol-phase] input,
+      [data-protocol-phase] select,
+      [data-protocol-phase] button,
+      #add-phase,
+      [name="repeatCount"],
+      [name="autoMarkerEnabled"],
+      [name="autoMarkerIntervalSeconds"]
+    `);
+
+  for (const control of controls) {
+    control.disabled = Boolean(locked);
+  }
+}
