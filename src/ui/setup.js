@@ -12,13 +12,8 @@ export function readSetupForm(form) {
   const protocol =
     phaseRows.length > 0
       ? {
-          repeatCount: Math.max(
-            1,
-            Math.floor(
-              Number(
-                data.get("repeatCount")
-              ) || 1
-            )
+          repeatCount: Number(
+            data.get("repeatCount")
           ),
           phases: phaseRows.map(
             (row, index) => ({
@@ -104,6 +99,18 @@ export function validateSetup(data) {
   } else if (
     typeof data.protocol === "object"
   ) {
+    const repeatCount =
+      Number(data.protocol.repeatCount);
+
+    if (
+      !Number.isInteger(repeatCount) ||
+      repeatCount < 1
+    ) {
+      errors.push(
+        "Repeat Count must be an integer of at least 1."
+      );
+    }
+
     try {
       normalizeProtocol(
         data.protocol
@@ -130,4 +137,6 @@ export function validateSetup(data) {
 
   return errors;
 }
+
+
 

@@ -122,3 +122,66 @@ it("rejects an invalid structured protocol phase", () => {
   ).toBe(true);
 });
 
+
+it("rejects repeat count below one", () => {
+  const data = {
+    participantCode: "P001",
+    sessionCode: "S001",
+    protocol: {
+      repeatCount: 0,
+      phases: [
+        {
+          id: "phase-1",
+          name: "Baseline",
+          type: "baseline",
+          durationSeconds: 30,
+          autoMarkerEnabled: true
+        }
+      ]
+    },
+    autoMarker: {
+      enabled: false,
+      intervalSeconds: 0
+    }
+  };
+
+  const errors = validateSetup(data);
+
+  expect(
+    errors.some(error =>
+      error.toLowerCase().includes("repeat")
+    )
+  ).toBe(true);
+});
+
+it("preserves an invalid repeat count so validation can reject it", () => {
+  const form = document.createElement("form");
+
+  form.innerHTML = `
+    <input name="participantCode" value="P001">
+    <input name="sessionCode" value="S001">
+
+    <div data-protocol-phase>
+      <input data-phase-name value="Baseline">
+      <select data-phase-type>
+        <option value="baseline" selected>
+          Baseline
+        </option>
+      </select>
+      <input data-phase-duration value="30">
+      <input
+        type="checkbox"
+        data-phase-automarker
+        checked
+      >
+    </div>
+
+    <input name="repeatCount" value="0">
+  `;
+
+  const data = readSetupForm(form);
+
+  expect(
+    data.protocol.repeatCount
+  ).toBe(0);
+});
