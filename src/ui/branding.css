@@ -1,0 +1,126 @@
+.brand-logo-frame {
+  width: 112px;
+  height: 68px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.brand-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.brand-contact {
+  margin-top: 7px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.74rem;
+}
+
+.brand-contact a {
+  color: var(--navy-2);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.brand-contact a:hover {
+  text-decoration: underline;
+}
+
+.brand-contact-separator {
+  color: #94a3b8;
+}
+
+.imu-live-panel {
+  padding: 20px 22px;
+}
+
+.imu-live-heading {
+  align-items: flex-start;
+}
+
+.acquisition-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.045em;
+}
+
+.imu-live-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.imu-live-value {
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid #e4e9f0;
+  border-radius: 12px;
+  background: #fafcff;
+}
+
+.imu-live-value span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.imu-live-value strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--navy);
+  font-size: 1.05rem;
+}
+
+.imu-live-note {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+
+@media (max-width: 1050px) {
+  .imu-live-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .brand-logo-frame {
+    width: 86px;
+    height: 56px;
+  }
+
+  .brand-contact {
+    display: grid;
+    gap: 3px;
+  }
+
+  .brand-contact-separator {
+    display: none;
+  }
+
+  .imu-live-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

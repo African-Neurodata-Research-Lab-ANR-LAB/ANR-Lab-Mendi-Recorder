@@ -225,6 +225,74 @@ export class MendiDriver {
     );
   }
 
+  /**
+   * Read the current ABB1 Frame value without issuing any control write.
+   * Used only as a fallback when ABB1 notifications are stale.
+   */
+  async readFrame() {
+    const characteristic =
+      this.getCharacteristic("ABB1");
+
+    if (!characteristic) {
+      throw new RecorderError(
+        ERROR_CODES
+          .CHARACTERISTIC_UNAVAILABLE,
+        "ABB1 frame data is not available on this device."
+      );
+    }
+
+    if (
+      typeof characteristic
+        .readValue !== "function"
+    ) {
+      throw new RecorderError(
+        ERROR_CODES.PROTOCOL_UNSUPPORTED,
+        "ABB1 does not expose a readable value on this device."
+      );
+    }
+
+    const value =
+      await characteristic
+        .readValue();
+
+    const source =
+      value instanceof DataView
+        ? value
+        : new DataView(
+            value.buffer ?? value,
+            value.byteOffset ?? 0,
+            value.byteLength ??
+              value.length ??
+              0
+          );
+
+    const bytes =
+      new Uint8Array(
+        source.byteLength
+      );
+
+    bytes.set(
+      new Uint8Array(
+        source.buffer,
+        source.byteOffset,
+        source.byteLength
+      )
+    );
+
+    const timestampMs =
+      Date.now();
+
+    return {
+      timestampMs,
+      receivedAtMs:
+        timestampMs,
+      characteristicUuid:
+        characteristic.uuid,
+      bytes,
+      transport: "poll"
+    };
+  }
+
   async subscribe(
     key,
     callback

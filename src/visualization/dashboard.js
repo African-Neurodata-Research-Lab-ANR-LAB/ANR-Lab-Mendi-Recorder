@@ -90,10 +90,14 @@ export function renderDashboard(
 
   const setText =
     (selector, value) => {
-      const element =
-        root.querySelector(selector);
+      const elements =
+        root.querySelectorAll(
+          selector
+        );
 
-      if (element) {
+      for (
+        const element of elements
+      ) {
         element.textContent =
           String(value);
       }
@@ -274,6 +278,12 @@ export function renderDashboard(
   setText(
     "[data-decoded-frames]",
     sensor.decodedFrameCount ?? 0
+  );
+
+  setText(
+    "[data-acquisition-mode]",
+    sensor.acquisitionMode ??
+      "WAITING"
   );
 
   for (

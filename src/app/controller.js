@@ -135,6 +135,7 @@ function resetLiveState() {
 
   state.sensor = {
     decodedFrameCount: 0,
+    acquisitionMode: "WAITING",
     temperatureC: null,
     left: {
       red: null,
@@ -377,7 +378,7 @@ function render() {
         : marker.onset;
 
     item.textContent =
-      `${time}s — ${marker.description}`;
+      `${time}s | ${marker.description}`;
 
     markerList.appendChild(item);
   }
@@ -551,6 +552,11 @@ root
           decodeFrame(packet.bytes);
 
         if (decoded.decoded) {
+          state.sensor.acquisitionMode =
+            packet.transport === "poll"
+              ? "POLL"
+              : "NOTIFY";
+
           session.appendDecoded(
             decoded
           );

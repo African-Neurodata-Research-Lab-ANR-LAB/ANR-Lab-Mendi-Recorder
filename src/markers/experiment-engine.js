@@ -124,7 +124,11 @@ export class ExperimentEngine {
 
     this.active = true;
 
-    this.timer = this.setIntervalFn(
+    // Browser timer functions such as window.setInterval are Web-IDL methods.
+    // Calling a detached reference as an object method can make Chrome reject
+    // the receiver with TypeError: Illegal invocation.
+    this.timer = this.setIntervalFn.call(
+      globalThis,
       () => this.tick(),
       this.pollMs
     );
@@ -187,7 +191,8 @@ export class ExperimentEngine {
 
   stop() {
     if (this.timer !== null) {
-      this.clearIntervalFn(
+      this.clearIntervalFn.call(
+        globalThis,
         this.timer
       );
     }
@@ -221,5 +226,3 @@ export class ExperimentEngine {
     };
   }
 }
-
-

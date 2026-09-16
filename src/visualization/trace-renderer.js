@@ -51,6 +51,50 @@ function collectRange(traces) {
   };
 }
 
+function drawPoint(
+  context,
+  x,
+  y,
+  strokeStyle
+) {
+  if (
+    "fillStyle" in context
+  ) {
+    context.fillStyle =
+      strokeStyle;
+  }
+
+  if (
+    typeof context.arc ===
+      "function" &&
+    typeof context.fill ===
+      "function"
+  ) {
+    context.beginPath();
+    context.arc(
+      x,
+      y,
+      3.5,
+      0,
+      Math.PI * 2
+    );
+    context.fill();
+    return;
+  }
+
+  if (
+    typeof context.fillRect ===
+    "function"
+  ) {
+    context.fillRect(
+      x - 2,
+      y - 2,
+      4,
+      4
+    );
+  }
+}
+
 function drawLine(
   context,
   samples,
@@ -62,15 +106,9 @@ function drawLine(
   const points =
     validPoints(samples);
 
-  if (points.length < 2) {
+  if (!points.length) {
     return;
   }
-
-  const count =
-    Math.max(
-      samples.length,
-      2
-    );
 
   const plotTop = 16;
   const plotBottom =
@@ -87,6 +125,31 @@ function drawLine(
 
   const valueRange =
     range.max - range.min || 1;
+
+  if (points.length === 1) {
+    const normalized =
+      (points[0].value - range.min) /
+      valueRange;
+
+    const y =
+      plotBottom -
+      normalized * plotHeight;
+
+    drawPoint(
+      context,
+      plotWidth / 2,
+      y,
+      strokeStyle
+    );
+
+    return;
+  }
+
+  const count =
+    Math.max(
+      samples.length,
+      2
+    );
 
   if (
     "strokeStyle" in context

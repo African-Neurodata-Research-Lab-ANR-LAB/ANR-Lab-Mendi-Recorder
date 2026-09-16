@@ -35,6 +35,7 @@ const emptyOpticalChannel = () => ({
 const initialSensorState =
   Object.freeze({
     decodedFrameCount: 0,
+    acquisitionMode: "WAITING",
     temperatureC: null,
     left: emptyOpticalChannel(),
     right: emptyOpticalChannel(),

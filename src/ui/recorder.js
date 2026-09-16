@@ -114,13 +114,30 @@ export function recorderMarkup() {
     <main class="shell">
       <header class="app-header">
         <div class="brand-lockup">
-          <div class="brand-mark">ANR</div>
+          <div class="brand-logo-frame">
+            <img
+              class="brand-logo"
+              src="./anr-logo.png"
+              alt="African Neurodata Research Lab logo"
+            >
+          </div>
           <div>
             <p class="eyebrow">AFRICAN NEURODATA RESEARCH LAB</p>
             <h1>ANR Mendi Research Recorder</h1>
             <p class="subhead">
               Raw optical acquisition · protocol timing · local research export
             </p>
+            <div class="brand-contact">
+              <a
+                href="https://africanneurodataresearch.org/"
+                target="_blank"
+                rel="noreferrer"
+              >africanneurodataresearch.org</a>
+              <span class="brand-contact-separator">·</span>
+              <a
+                href="mailto:anrlab.ng@gmail.com"
+              >anrlab.ng@gmail.com</a>
+            </div>
           </div>
         </div>
 
@@ -461,6 +478,61 @@ export function recorderMarkup() {
           <strong data-packets>0</strong>
           <small>All subscribed characteristics</small>
         </article>
+
+        <article class="sensor-card">
+          <span>Optical Acquisition</span>
+          <strong data-acquisition-mode>WAITING</strong>
+          <small>NOTIFY preferred · POLL is read-only fallback</small>
+        </article>
+      </section>
+
+      <section class="panel imu-live-panel">
+        <div class="section-heading imu-live-heading">
+          <div>
+            <p class="eyebrow">LIVE HEAD MOVEMENT</p>
+            <h2>Raw IMU Monitor</h2>
+            <p>
+              Accelerometer and gyroscope fields decoded from the same ABB1
+              frame as the optical data.
+            </p>
+          </div>
+          <span class="acquisition-mode-badge">
+            Optical source:
+            <strong data-acquisition-mode>WAITING</strong>
+          </span>
+        </div>
+
+        <div class="imu-live-grid">
+          <div class="imu-live-value">
+            <span>Accel X</span>
+            <strong data-imu-acc-x>—</strong>
+          </div>
+          <div class="imu-live-value">
+            <span>Accel Y</span>
+            <strong data-imu-acc-y>—</strong>
+          </div>
+          <div class="imu-live-value">
+            <span>Accel Z</span>
+            <strong data-imu-acc-z>—</strong>
+          </div>
+          <div class="imu-live-value">
+            <span>Gyro X</span>
+            <strong data-imu-gyro-x>—</strong>
+          </div>
+          <div class="imu-live-value">
+            <span>Gyro Y</span>
+            <strong data-imu-gyro-y>—</strong>
+          </div>
+          <div class="imu-live-value">
+            <span>Gyro Z</span>
+            <strong data-imu-gyro-z>—</strong>
+          </div>
+        </div>
+
+        <p class="imu-live-note">
+          Raw device values only. The recorder does not infer calibrated g,
+          degrees/s, head pose, or clinical movement measures.
+        </p>
       </section>
 
       <details class="panel technical-monitor">
