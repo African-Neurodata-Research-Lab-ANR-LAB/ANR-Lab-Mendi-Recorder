@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest';
 import { NotificationPipeline } from "../src/ble/notification-pipeline.js";
 import { MendiWatchdog } from "../src/ble/mendi-watchdog.js";
 import { StreamManager } from "../src/stream/stream-manager.js";
@@ -5,7 +6,7 @@ import { FrameValidator } from "../src/qc/frame-validator.js";
 import { PacketInspector } from "../src/qc/packet-inspector.js";
 import { StreamQualityEngine } from "../src/qc/stream-quality-engine.js";
 
-export function runIntegrationTest() {
+function runIntegrationTest() {
   const streamManager = new StreamManager();
   const validator = new FrameValidator();
   const packetInspector = new PacketInspector();
@@ -41,3 +42,13 @@ export function runIntegrationTest() {
     watchdog: watchdog.getState()
   };
 }
+
+describe('Mendi acquisition integration', () => {
+  test('processes an ABB1 frame through the acquisition pipeline', () => {
+    const result = runIntegrationTest();
+
+    expect(result.passed).toBe(true);
+    expect(result.validation).toBeDefined();
+    expect(result.quality).toBeDefined();
+  });
+});
