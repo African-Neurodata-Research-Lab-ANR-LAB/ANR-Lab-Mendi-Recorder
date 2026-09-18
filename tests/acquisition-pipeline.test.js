@@ -20,10 +20,13 @@ export function testFrameValidator() {
 export function testStreamQualityEngine() {
   const engine = new StreamQualityEngine();
 
-  engine.update({
-    fresh: true,
-    duplicate: false
-  });
+  engine.process(
+    {
+      fresh: true,
+      duplicate: false
+    },
+    Date.now()
+  );
 
   const report = engine.getReport();
 
