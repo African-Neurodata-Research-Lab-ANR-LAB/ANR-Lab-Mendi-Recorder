@@ -13,14 +13,17 @@ export class NotificationPipeline {
     this.watchdog = watchdog;
   }
 
-  process(packet) {
+  process(packet, timestamp = Date.now()) {
     const validation = this.validator.validate(packet);
 
     this.packetInspector.inspect(packet, validation);
 
-    const quality = this.qualityEngine.update(validation);
+    const quality = this.qualityEngine.process(
+      validation,
+      timestamp
+    );
 
-    this.watchdog.recordPacket();
+    this.watchdog.recordPacket(timestamp);
 
     const enrichedPacket = {
       packet,
