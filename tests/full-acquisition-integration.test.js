@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { expect, test } from 'vitest';
 import { NotificationPipeline } from "../src/ble/notification-pipeline.js";
 import { MendiWatchdog } from "../src/ble/mendi-watchdog.js";
 import { StreamManager } from "../src/stream/stream-manager.js";
@@ -35,12 +35,10 @@ function runIntegrationTest() {
   return received;
 }
 
-describe('Mendi acquisition integration', () => {
-  it('runs the ABB1 frame through the acquisition pipeline', () => {
-    const result = runIntegrationTest();
+test('Mendi ABB1 frame passes through acquisition pipeline', () => {
+  const result = runIntegrationTest();
 
-    expect(result).not.toBeNull();
-    expect(result.validation).toBeDefined();
-    expect(result.quality).toBeDefined();
-  });
+  expect(result).not.toBeNull();
+  expect(result.validation).toBeDefined();
+  expect(result.quality).toBeDefined();
 });
