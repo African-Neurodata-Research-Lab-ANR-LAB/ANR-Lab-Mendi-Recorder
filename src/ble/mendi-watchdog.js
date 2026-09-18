@@ -6,6 +6,8 @@ export class MendiWatchdog {
     this.state = "idle";
     this.timer = null;
     this.listeners = new Set();
+    this.recoveryCallbacks = new Set();
+    this.recoveryTriggered = false;
   }
 
   start() {
@@ -27,6 +29,7 @@ export class MendiWatchdog {
 
   recordPacket(timestamp = Date.now()) {
     this.lastPacketAt = timestamp;
+    this.recoveryTriggered = false;
     this.setState("healthy");
   }
 
@@ -39,6 +42,30 @@ export class MendiWatchdog {
 
     if (elapsed > this.timeoutMs) {
       this.setState("stale");
+      this.triggerRecovery();
+    }
+  }
+
+  onRecovery(callback) {
+    this.recoveryCallbacks.add(callback);
+
+    return () => {
+      this.recoveryCallbacks.delete(callback);
+    };
+  }
+
+  triggerRecovery() {
+    if (this.recoveryTriggered) {
+      return;
+    }
+
+    this.recoveryTriggered = true;
+
+    for (const callback of this.recoveryCallbacks) {
+      callback({
+        state: this.state,
+        lastPacketAt: this.lastPacketAt
+      });
     }
   }
 
@@ -65,7 +92,8 @@ export class MendiWatchdog {
   getState() {
     return {
       state: this.state,
-      lastPacketAt: this.lastPacketAt
+      lastPacketAt: this.lastPacketAt,
+      recoveryTriggered: this.recoveryTriggered
     };
   }
 }
