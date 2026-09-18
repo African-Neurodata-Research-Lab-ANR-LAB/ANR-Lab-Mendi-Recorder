@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { NotificationPipeline } from "../src/ble/notification-pipeline.js";
 import { MendiWatchdog } from "../src/ble/mendi-watchdog.js";
 import { StreamManager } from "../src/stream/stream-manager.js";
@@ -27,27 +27,19 @@ function runIntegrationTest() {
     received = packet;
   });
 
-  const mockABB1Frame = new Uint8Array([
+  pipeline.process(new Uint8Array([
     0x41, 0x42, 0x42, 0x31,
     0x01, 0x02, 0x03
-  ]);
+  ]), Date.now());
 
-  pipeline.process(mockABB1Frame, Date.now());
-
-  return {
-    passed: Boolean(received),
-    validation: received?.validation,
-    quality: received?.quality,
-    packets: packetInspector.getReport(),
-    watchdog: watchdog.getState()
-  };
+  return received;
 }
 
 describe('Mendi acquisition integration', () => {
-  test('processes an ABB1 frame through the acquisition pipeline', () => {
+  it('runs the ABB1 frame through the acquisition pipeline', () => {
     const result = runIntegrationTest();
 
-    expect(result.passed).toBe(true);
+    expect(result).not.toBeNull();
     expect(result.validation).toBeDefined();
     expect(result.quality).toBeDefined();
   });
