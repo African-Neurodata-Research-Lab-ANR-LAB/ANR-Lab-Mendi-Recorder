@@ -94,6 +94,9 @@ import {
 import {
   renderTrace
 } from "../visualization/trace-renderer.js";
+import { LslClient } from "../streaming/lsl-client.js";
+import { LiveSession } from "../streaming/live-session.js";
+import { renderLivePanel } from "../streaming/live-panel.js";
 
 const root =
   document.querySelector("#app");
@@ -111,7 +114,11 @@ const packetInspectionState =
     packetInspector
   );
 const traceBuffer =
-  new LiveTraceBuffer(600);
+  new LiveTraceBuffer(20000);
+const lslBridge = new LslClient();
+const liveSession = new LiveSession({bridge: lslBridge});
+let traceWindowSeconds = 60;
+let displayTimeSeconds = 0;
 
 let session = new Session();
 let experimentEngine = null;
@@ -127,6 +134,7 @@ state.browserSupport =
 
 function resetLiveState() {
   traceBuffer.clear();
+  displayTimeSeconds = 0;
   packetInspector.clear();
 
   state.packetCount = 0;
@@ -300,8 +308,15 @@ function updateTechnicalMonitor() {
 }
 
 function renderLiveTraces() {
+  if (session.status === "recording") displayTimeSeconds = session.clock.nowSeconds();
+  const endSeconds = Math.max(traceWindowSeconds, displayTimeSeconds);
+  const plotOptions = {
+    startSeconds: endSeconds - traceWindowSeconds,
+    endSeconds,
+    gapSeconds: 2
+  };
   const traces =
-    traceBuffer.getDual();
+    traceBuffer.getWindow(displayTimeSeconds, traceWindowSeconds);
 
   const markers =
     session.markers.all();
@@ -321,7 +336,7 @@ function renderLiveTraces() {
         ...traces.left,
         times: traces.times
       },
-      { markers }
+      { markers, ...plotOptions }
     );
   }
 
@@ -332,7 +347,7 @@ function renderLiveTraces() {
         ...traces.right,
         times: traces.times
       },
-      { markers }
+      { markers, ...plotOptions }
     );
   }
 }
@@ -352,6 +367,7 @@ function render() {
 
   renderDashboard(root, state);
   renderLiveTraces();
+  refreshLivePanel();
 
   const markerList =
     root.querySelector("#markers");
@@ -537,6 +553,7 @@ root
     resetLiveState();
 
     const onPacket = packet => {
+      const receiptMs = performance.now();
       session.appendRaw(packet);
 
       state.packetCount =
@@ -618,6 +635,7 @@ root
             session.status ===
               "recording"
           ) {
+            liveSession.observe(opticalSample, decoded.imu, receiptMs, packet.transport);
             traceBuffer.push(
               opticalSample,
               session.clock
@@ -655,23 +673,12 @@ root
     acquisitionPacketHandler =
       onPacket;
 
+    let recordingStarted = false;
+
     try {
-      const started =
-        await startAcquisition(
-          driver,
-          onPacket,
-          {
-            packetInspector,
-            onFailure: error => {
-              state.error =
-                error.message;
-              render();
-            }
-          }
-        );
-
-      if (!started) return;
-
+      // Open the session before enabling the sensor. Some firmware can emit
+      // ABB1 immediately after the ABB2 enable write, and those first frames
+      // must enter the same session as every later frame.
       experimentEngine =
         beginPreparedRecording({
           session,
@@ -681,6 +688,8 @@ root
           root,
           setProtocolBuilderLocked
         });
+      recordingStarted = true;
+      liveSession.begin(session);
 
       state.monitor.imu = {
         enabled:
@@ -696,6 +705,24 @@ root
       state.quality =
         "NO SIGNAL";
 
+      const started =
+        await startAcquisition(
+          driver,
+          onPacket,
+          {
+            packetInspector,
+            onFailure: error => {
+              state.error =
+                error.message;
+              render();
+            }
+          }
+        );
+
+      if (!started) {
+        throw new Error("Mendi acquisition is already active.");
+      }
+
       startMonitorTimer();
       saveCheckpoint(true);
       render();
@@ -706,6 +733,18 @@ root
         );
       } catch {
         // Preserve the acquisition/start error below.
+      }
+
+      if (recordingStarted) {
+        abortPreparedExperiment({
+          session,
+          experimentEngine,
+          state,
+          root,
+          setProtocolBuilderLocked
+        });
+        liveSession.end();
+        experimentEngine = null;
       }
 
       state.error = error.message;
@@ -771,6 +810,7 @@ root
     }
 
     experimentEngine = null;
+    liveSession.end();
     stopMonitorTimer();
     saveCheckpoint(true);
     render();
@@ -919,4 +959,27 @@ driver.onDisconnected = async () => {
   }
 };
 
+function refreshLivePanel() {
+  liveSession.flushMarkers();
+  const health = liveSession.health.snapshot(performance.now());
+  if (session.status !== "recording") health.status = session.status === "stopped" ? "ENDED" : "WAITING";
+  renderLivePanel(root, health, lslBridge.snapshot());
+}
+
+root.querySelector('#trace-window').onchange = event => {
+  traceWindowSeconds = Number(event.target.value);
+  renderLiveTraces();
+};
+root.querySelector('#bridge-connect').onclick = () => {
+  try { lslBridge.connect(root.querySelector('#bridge-url').value.trim()); }
+  catch (error) { lslBridge.error = error.message; }
+  refreshLivePanel();
+};
+root.querySelector('#bridge-disconnect').onclick = () => {
+  lslBridge.disconnect(); refreshLivePanel();
+};
+const livePanelTimer = setInterval(refreshLivePanel, 250);
+window.addEventListener('pagehide', () => {
+  clearInterval(livePanelTimer); lslBridge.disconnect();
+});
 render();

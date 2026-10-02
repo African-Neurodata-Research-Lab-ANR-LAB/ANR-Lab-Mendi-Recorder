@@ -113,4 +113,17 @@ export class LiveTraceBuffer {
       }
     };
   }
+
+  getWindow(endSeconds, windowSeconds) {
+    const view = this.getDual();
+    const indices = view.times.flatMap((time, index) =>
+      typeof time === 'number' && time >= endSeconds - windowSeconds && time <= endSeconds
+        ? [index] : []);
+    const pick = values => indices.map(index => values[index]);
+    return {
+      times: pick(view.times),
+      left: {red: pick(view.left.red), infrared: pick(view.left.infrared)},
+      right: {red: pick(view.right.red), infrared: pick(view.right.infrared)}
+    };
+  }
 }

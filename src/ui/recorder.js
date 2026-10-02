@@ -390,6 +390,25 @@ export function recorderMarkup() {
         </div>
       </section>
 
+      <section class="panel live-monitor-panel" aria-label="Live stream health">
+        <div class="section-heading">
+          <div><p class="eyebrow">ACQUISITION HEALTH</p><h2>Live monitoring</h2></div>
+          <label for="trace-window">Visible window
+            <select id="trace-window"><option value="30">30 seconds</option><option value="60" selected>60 seconds</option><option value="120">120 seconds</option></select>
+          </label>
+        </div>
+        <div class="live-health-grid">
+          <div><span>Stream</span><strong data-live-status>WAITING</strong></div>
+          <div><span>Last optical data</span><strong data-live-age>—</strong></div>
+          <div><span>Last value change</span><strong data-live-change-age>—</strong></div>
+          <div><span>Optical arrivals · 5 s</span><strong data-live-rate>—</strong></div>
+          <div><span>Consecutive repeats</span><strong data-live-repeats>0</strong></div>
+          <div><span>Movement · raw change</span><strong data-live-movement>—</strong></div>
+        </div>
+        <p class="live-stream-warning" data-live-warning role="status"></p>
+        <p class="live-help">Arrival rate counts received optical frames, including repeats. Changing values do not establish signal quality. Movement values are uncalibrated.</p>
+      </section>
+
       <section class="signal-layout">
         <div class="panel signal-panel">
           <div class="section-heading">
@@ -446,6 +465,26 @@ export function recorderMarkup() {
             <div class="canvas-watermark">RAW DEVICE UNITS</div>
           </div>
         </div>
+      </section>
+
+      <section class="panel local-stream-panel" aria-label="Local LSL bridge">
+        <div class="section-heading">
+          <div><p class="eyebrow">STREAM TO RESEARCH TOOLS</p><h2>Local LSL bridge</h2></div>
+          <strong data-live-bridge>DISCONNECTED</strong>
+        </div>
+        <p>Start the Python bridge on this computer, then connect. Run the recorder locally when using LSL.</p>
+        <div class="bridge-controls">
+          <label for="bridge-url">Bridge address<input id="bridge-url" type="url" value="ws://127.0.0.1:8765" spellcheck="false"></label>
+          <button id="bridge-connect" type="button">Connect bridge</button>
+          <button id="bridge-disconnect" type="button" disabled>Disconnect bridge</button>
+        </div>
+        <div class="bridge-details">
+          <span>Unsent optical samples: <strong data-live-unsent>0</strong></span>
+          <span>Clock round trip: <strong data-live-rtt>—</strong></span>
+          <span>HbO/HbR: <strong>Awaiting validation</strong></span>
+        </div>
+        <p class="live-stream-warning" data-live-bridge-error role="status"></p>
+        <p class="live-help">Local recording continues when the bridge is offline. Reconnect explicitly after a bridge failure; unsent optical samples remain in your session export.</p>
       </section>
 
       <section class="sensor-grid">

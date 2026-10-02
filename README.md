@@ -66,6 +66,18 @@ The recorder is intentionally separated from scientific interpretation. It does 
 
 ## Live Application
 
+### Live monitoring and local LSL streaming
+
+The recorder now includes 30/60/120-second raw optical windows, task markers,
+data-age and repeated-value warnings, optical arrival rate, and raw movement
+changes. An optional local Python bridge publishes optical, IMU, quality,
+and event streams for MNE-LSL and other LSL consumers.
+
+See **[Local LSL setup and validation](bridge/README.md)** for Windows setup,
+stream definitions, timestamp limitations, and the hardware acceptance check.
+HbO/HbR remains unavailable pending scientific validation. This integration
+does not establish continuous fresh streaming on physical Mendi hardware.
+
 **[Launch the ANR Lab Mendi fNIRS Recorder](https://african-neurodata-research-lab-anr-lab.github.io/ANR-Lab-Mendi-Recorder/)**
 
 > GitHub Pages deploys from `main`. Development changes may be validated on another branch before public release.

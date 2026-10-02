@@ -895,3 +895,16 @@ footer a {
     grid-template-columns: 1fr;
   }
 }
+/* Live acquisition diagnostics and optional local research streaming. */
+.live-health-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 16px; margin: 20px 0 8px; }
+.live-health-grid > div { padding: 12px; border: 1px solid #dbe4ee; border-radius: 10px; background: #f8fafc; }
+.live-health-grid span { display: block; font-size: .76rem; color: #64748b; margin-bottom: 8px; }
+.live-health-grid strong { display: block; color: #0f172a; font-size: .95rem; }
+.live-stream-warning { color: #92400e; font-weight: 600; margin: 12px 0 0; }
+.live-stream-warning:empty { display: none; }
+.live-help { font-size: .8rem; color: #64748b; line-height: 1.5; }
+.bridge-controls { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; margin: 16px 0; }
+.bridge-controls label { flex: 1 1 250px; }
+.bridge-controls input { display: block; width: 100%; margin-top: 6px; }
+.bridge-details { display: flex; gap: 20px; flex-wrap: wrap; font-size: .86rem; }
+.local-stream-panel, .live-monitor-panel { margin-block: 18px; }

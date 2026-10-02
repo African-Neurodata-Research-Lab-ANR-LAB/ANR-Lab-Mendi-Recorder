@@ -1,338 +1,73 @@
-function validPoints(samples) {
-  return samples
-    .map((value, index) => ({
-      value,
-      index
-    }))
-    .filter(
-      point =>
-        typeof point.value ===
-          "number" &&
-        Number.isFinite(point.value)
-    );
+const finite = value => typeof value === 'number' && Number.isFinite(value);
+
+function valueRange(traces) {
+  let min = Infinity, max = -Infinity;
+  for (const key of ['red', 'infrared']) {
+    for (const value of traces[key] ?? []) {
+      if (finite(value)) { min = Math.min(min, value); max = Math.max(max, value); }
+    }
+  }
+  if (!finite(min)) return null;
+  const pad = min === max ? Math.max(Math.abs(min) * 0.02, 1) : (max - min) * 0.08;
+  return {min: min - pad, max: max + pad};
 }
 
-function collectRange(traces) {
-  const values = [
-    ...(traces.red ?? []),
-    ...(traces.infrared ?? [])
-  ].filter(
-    value =>
-      typeof value === "number" &&
-      Number.isFinite(value)
-  );
-
-  if (!values.length) {
-    return null;
-  }
-
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-
-  if (min === max) {
-    const pad =
-      Math.max(
-        Math.abs(min) * 0.02,
-        1
-      );
-
-    return {
-      min: min - pad,
-      max: max + pad
-    };
-  }
-
-  const padding =
-    (max - min) * 0.08;
-
-  return {
-    min: min - padding,
-    max: max + padding
-  };
+function dot(ctx, x, y, color) {
+  ctx.fillStyle = color;
+  if (typeof ctx.arc === 'function' && typeof ctx.fill === 'function') {
+    ctx.beginPath(); ctx.arc(x, y, 3.5, 0, 2 * Math.PI); ctx.fill();
+  } else ctx.fillRect?.(x - 2, y - 2, 4, 4);
 }
 
-function drawPoint(
-  context,
-  x,
-  y,
-  strokeStyle
-) {
-  if (
-    "fillStyle" in context
-  ) {
-    context.fillStyle =
-      strokeStyle;
-  }
-
-  if (
-    typeof context.arc ===
-      "function" &&
-    typeof context.fill ===
-      "function"
-  ) {
-    context.beginPath();
-    context.arc(
-      x,
-      y,
-      3.5,
-      0,
-      Math.PI * 2
-    );
-    context.fill();
-    return;
-  }
-
-  if (
-    typeof context.fillRect ===
-    "function"
-  ) {
-    context.fillRect(
-      x - 2,
-      y - 2,
-      4,
-      4
-    );
-  }
-}
-
-function drawLine(
-  context,
-  samples,
-  width,
-  height,
-  range,
-  strokeStyle
-) {
-  const points =
-    validPoints(samples);
-
-  if (!points.length) {
-    return;
-  }
-
-  const plotTop = 16;
-  const plotBottom =
-    Math.max(
-      plotTop + 1,
-      height - 18
-    );
-
-  const plotHeight =
-    plotBottom - plotTop;
-
-  const plotWidth =
-    Math.max(1, width - 1);
-
-  const valueRange =
-    range.max - range.min || 1;
-
-  if (points.length === 1) {
-    const normalized =
-      (points[0].value - range.min) /
-      valueRange;
-
-    const y =
-      plotBottom -
-      normalized * plotHeight;
-
-    drawPoint(
-      context,
-      plotWidth / 2,
-      y,
-      strokeStyle
-    );
-
-    return;
-  }
-
-  const count =
-    Math.max(
-      samples.length,
-      2
-    );
-
-  if (
-    "strokeStyle" in context
-  ) {
-    context.strokeStyle =
-      strokeStyle;
-  }
-
-  if (
-    "lineWidth" in context
-  ) {
-    context.lineWidth = 1.7;
-  }
-
-  context.beginPath();
-
-  points.forEach(
-    (point, pointIndex) => {
-      const x =
-        (point.index /
-          (count - 1)) *
-        plotWidth;
-
-      const normalized =
-        (point.value - range.min) /
-        valueRange;
-
-      const y =
-        plotBottom -
-        normalized * plotHeight;
-
-      if (pointIndex === 0) {
-        context.moveTo(x, y);
-      } else {
-        context.lineTo(x, y);
+/** Raw values only. Sample and event x coordinates share a session-time axis. */
+export function renderTrace(canvas, traces, options = {}) {
+  const ctx = canvas?.getContext('2d');
+  if (!ctx) return;
+  const {width, height} = canvas;
+  ctx.clearRect(0, 0, width, height);
+  const times = traces.times ?? [];
+  const validTimes = times.filter(finite);
+  const start = options.startSeconds ?? validTimes[0];
+  const end = options.endSeconds ?? validTimes.at(-1);
+  const timed = finite(start) && finite(end) && end > start;
+  const plotWidth = Math.max(1, width - 1);
+  const xAt = (time, index, length) => timed && finite(time)
+    ? (time - start) / (end - start) * plotWidth
+    : length === 1 ? plotWidth / 2 : index / Math.max(1, length - 1) * plotWidth;
+  const range = valueRange(traces);
+  if (range) {
+    for (const [key, color] of [['red', options.redColor ?? '#dc2626'], ['infrared', options.infraredColor ?? '#2563eb']]) {
+      const samples = traces[key] ?? [];
+      const valid = samples.map((value, index) => ({value, index}))
+        .filter(p => finite(p.value) && (!timed || (finite(times[p.index]) && times[p.index] >= start && times[p.index] <= end)));
+      if (!valid.length) continue;
+      const yAt = value => height - 28 - (value - range.min) / (range.max - range.min) * Math.max(1, height - 48);
+      if (valid.length === 1) {
+        const p = valid[0]; dot(ctx, xAt(times[p.index], p.index, samples.length), yAt(p.value), color); continue;
       }
-    }
-  );
-
-  context.stroke();
-}
-
-function drawMarkers(
-  context,
-  width,
-  height,
-  times,
-  markers
-) {
-  if (
-    !Array.isArray(times) ||
-    !times.length ||
-    !Array.isArray(markers) ||
-    !markers.length
-  ) {
-    return;
-  }
-
-  const numericTimes =
-    times.filter(
-      value =>
-        typeof value === "number" &&
-        Number.isFinite(value)
-    );
-
-  if (!numericTimes.length) {
-    return;
-  }
-
-  const start = numericTimes[0];
-  const end =
-    numericTimes.at(-1);
-  const span = end - start;
-
-  if (!(span > 0)) {
-    return;
-  }
-
-  for (const marker of markers) {
-    const onset =
-      Number(marker.onset);
-
-    if (
-      !Number.isFinite(onset) ||
-      onset < start ||
-      onset > end
-    ) {
-      continue;
-    }
-
-    const x =
-      ((onset - start) / span) *
-      width;
-
-    if (
-      "strokeStyle" in context
-    ) {
-      context.strokeStyle =
-        "rgba(30, 41, 59, 0.32)";
-    }
-
-    if (
-      typeof context.setLineDash ===
-      "function"
-    ) {
-      context.setLineDash([4, 4]);
-    }
-
-    context.beginPath();
-    context.moveTo(x, 0);
-    context.lineTo(x, height);
-    context.stroke();
-
-    if (
-      typeof context.setLineDash ===
-      "function"
-    ) {
-      context.setLineDash([]);
+      ctx.strokeStyle = color; ctx.lineWidth = 1.7; ctx.beginPath();
+      let previous = null;
+      for (const point of valid) {
+        const x = xAt(times[point.index], point.index, samples.length);
+        const y = yAt(point.value);
+        const gap = previous && timed && times[point.index] - times[previous.index] > (options.gapSeconds ?? 2);
+        if (!previous || point.index !== previous.index + 1 || gap) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+        previous = point;
+      }
+      ctx.stroke();
     }
   }
-}
-
-/**
- * Render raw optical Red and IR/NIR traces.
- * Values stay in device units; no haemoglobin conversion is performed here.
- */
-export function renderTrace(
-  canvas,
-  traces,
-  options = {}
-) {
-  if (!canvas) return;
-
-  const context =
-    canvas.getContext("2d");
-
-  if (!context) return;
-
-  const width =
-    canvas.width;
-
-  const height =
-    canvas.height;
-
-  context.clearRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-  const range =
-    collectRange(traces);
-
-  if (!range) {
-    return;
+  if (!timed) return;
+  for (const marker of options.markers ?? []) {
+    if (!finite(marker.onset) || marker.onset < start || marker.onset > end) continue;
+    const x = xAt(marker.onset);
+    ctx.strokeStyle = 'rgba(30, 41, 59, 0.4)'; ctx.lineWidth = 1;
+    ctx.setLineDash?.([4, 4]); ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height - 22); ctx.stroke(); ctx.setLineDash?.([]);
+    ctx.fillStyle = '#334155'; ctx.font = '11px sans-serif';
+    ctx.fillText?.(String(marker.description ?? '').slice(0, 24), Math.min(x + 3, Math.max(0, width - 150)), 13);
   }
-
-  drawLine(
-    context,
-    traces.red ?? [],
-    width,
-    height,
-    range,
-    options.redColor ??
-      "#dc2626"
-  );
-
-  drawLine(
-    context,
-    traces.infrared ?? [],
-    width,
-    height,
-    range,
-    options.infraredColor ??
-      "#2563eb"
-  );
-
-  drawMarkers(
-    context,
-    width,
-    height,
-    traces.times ?? [],
-    options.markers ?? []
-  );
+  ctx.fillStyle = '#64748b'; ctx.font = '12px sans-serif';
+  ctx.fillText?.(`${start.toFixed(1)} s`, 4, height - 5);
+  ctx.fillText?.(`${end.toFixed(1)} s`, Math.max(4, width - 75), height - 5);
 }
