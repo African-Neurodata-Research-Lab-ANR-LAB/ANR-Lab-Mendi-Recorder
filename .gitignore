@@ -12,3 +12,7 @@ sessions/
 .DS_Store
 Thumbs.db
 .worktrees/
+
+.venv/
+__pycache__/
+.superpowers/
