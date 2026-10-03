@@ -10,14 +10,15 @@ it('expires samples by session time, including when no packets arrive', () => {
 });
 
 function capture() {
-  const paths = []; let current;
+  const paths = []; const dots = []; let current;
   const ctx = {
     clearRect() {}, beginPath() {current = [];},
     moveTo(x, y) {current.push(['M', x, y]);},
     lineTo(x, y) {current.push(['L', x, y]);},
-    stroke() {paths.push(current);}, fillText() {}, setLineDash() {}
+    stroke() {paths.push(current);}, fillText() {}, setLineDash() {},
+    arc(x, y) { dots.push([x, y]); }, fill() {}
   };
-  return {paths, canvas: {width: 1001, height: 300, getContext: () => ctx}};
+  return {paths, dots, canvas: {width: 1001, height: 300, getContext: () => ctx}};
 }
 
 it('aligns irregularly spaced samples and event markers on the same time axis', () => {
@@ -28,7 +29,8 @@ it('aligns irregularly spaced samples and event markers on the same time axis', 
 });
 
 it('breaks the trace across missing samples and long acquisition gaps', () => {
-  const {canvas, paths} = capture();
+  const {canvas, paths, dots} = capture();
   renderTrace(canvas, {red: [1, null, 2, 3], times: [0, 0.5, 1, 10]}, {startSeconds: 0, endSeconds: 10, gapSeconds: 2});
   expect(paths[0].map(p => p[0])).toEqual(['M', 'M', 'M']);
+  expect(dots.map(p => p[0])).toEqual([0, 100, 1000]);
 });

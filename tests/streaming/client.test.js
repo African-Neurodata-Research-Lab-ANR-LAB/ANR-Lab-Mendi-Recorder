@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import { LslClient } from '../../src/streaming/lsl-client.js';
 
 class Socket {
@@ -47,4 +47,36 @@ it('reports backpressure and disconnect without throwing into acquisition', () =
 it('refuses a remote bridge URL', () => {
   const client = new LslClient({WebSocketClass: Socket});
   expect(() => client.connect('ws://example.com:8765')).toThrow(/loopback/i);
+});
+
+it('stops the remote session even before its start acknowledgement arrives', () => {
+  const {client, socket} = connectedClient();
+  client.begin('run-1');
+  client.end();
+  expect(socket.sent.at(-1)).toMatchObject({type: 'stop', run_id: 'run-1'});
+  socket.reply({type: 'started', run_id: 'run-1'});
+  expect(client.send({type: 'sample'})).toBe(false);
+  expect(client.snapshot().status).toBe('CONNECTED');
+  client.disconnect();
+});
+
+it('closes the connection if backpressure prevents the stop message', () => {
+  const {client, socket} = connectedClient();
+  client.begin('run-1'); socket.reply({type: 'started', run_id: 'run-1'});
+  socket.bufferedAmount = 300000;
+  client.end();
+  expect(socket.readyState).toBe(3);
+  expect(client.snapshot().status).toBe('ERROR');
+  client.disconnect();
+});
+
+it('keeps the connection timeout when a session ends during clock synchronization', () => {
+  vi.useFakeTimers();
+  const client = new LslClient({WebSocketClass: Socket});
+  try {
+    client.connect(); Socket.latest.open(); client.begin('run-1'); client.end();
+    vi.advanceTimersByTime(10001);
+    expect(client.snapshot().status).toBe('ERROR');
+    expect(Socket.latest.readyState).toBe(3);
+  } finally { client.disconnect(); vi.useRealTimers(); }
 });

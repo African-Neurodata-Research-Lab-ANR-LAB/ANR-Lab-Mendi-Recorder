@@ -1,10 +1,12 @@
 // @vitest-environment jsdom
 import { afterEach, expect, it, vi } from 'vitest';
 
-const hardware = vi.hoisted(() => ({callbacks: new Map()}));
+const hardware = vi.hoisted(() => ({callbacks: new Map(), subscriptionGate: null, driver: null}));
 vi.mock('../../src/ble/mendi-driver.js', () => ({MendiDriver: class {
+  constructor() { hardware.driver = this; }
   async connect() { return {name: 'Synthetic test Mendi'}; }
-  async subscribe(key, callback) { hardware.callbacks.set(key, callback); }
+  async reconnect() {}
+  async subscribe(key, callback) { await hardware.subscriptionGate; hardware.callbacks.set(key, callback); }
   async unsubscribe(key) { hardware.callbacks.delete(key); }
   async enableSensor() {
     hardware.callbacks.get('ABB1')?.({
@@ -29,12 +31,13 @@ class Socket {
 
 afterEach(() => { window.dispatchEvent(new Event('pagehide')); vi.useRealTimers(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 
-it('routes actual recorder controls and decoded frames into health, plots, LSL and final markers', async () => {
+async function setupRecorder() {
+  vi.resetModules(); hardware.callbacks.clear(); hardware.subscriptionGate = null;
   vi.useFakeTimers(); vi.stubGlobal('WebSocket', Socket);
   vi.stubGlobal('alert', vi.fn()); vi.stubGlobal('prompt', () => 'TASK_BUTTON');
   Object.defineProperty(navigator, 'bluetooth', {value: {}, configurable: true});
   URL.createObjectURL = () => 'blob:test'; URL.revokeObjectURL = () => {};
-  vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+  const download = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
   const drawing = [];
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(() => ({
     clearRect() {}, beginPath() {}, moveTo(x,y) {drawing.push([x,y]);}, lineTo() {}, stroke() {}, fillText() {}, setLineDash() {}, arc() {}, fill() {}
@@ -46,7 +49,13 @@ it('routes actual recorder controls and decoded frames into health, plots, LSL a
   expect($('[data-live-bridge]').textContent).toBe('CONNECTED');
   $('[name=participantCode]').value = 'SYNTHETIC'; $('[name=sessionCode]').value = 'TEST';
   $('#setup-form').dispatchEvent(new Event('submit', {bubbles:true, cancelable:true}));
-  await $('#connect').onclick(); await $('#start').onclick();
+  await $('#connect').onclick();
+  return {$, drawing, download};
+}
+
+it('routes actual recorder controls and decoded frames into health, plots, LSL and final markers', async () => {
+  const {$, drawing} = await setupRecorder();
+  await $('#start').onclick();
   await vi.advanceTimersByTimeAsync(300);
   expect($('[data-live-bridge]').textContent).toBe('STREAMING');
   for (let i=0;i<4;i++) {
@@ -66,5 +75,36 @@ it('routes actual recorder controls and decoded frames into health, plots, LSL a
   expect(events.map(m=>m.event.description)).toContain('TASK_BUTTON');
   expect(events.at(-1).event.description).toBe('STOP_RECORDING');
   expect(Socket.latest.sent.at(-1).type).toBe('stop');
+  expect($('[data-live-status]').textContent).toBe('ENDED');
+});
+
+it('continues the session clock after a disconnect cancels initial Bluetooth startup', async () => {
+  const {$} = await setupRecorder();
+  let finishSubscription;
+  hardware.subscriptionGate = new Promise(resolve => { finishSubscription = resolve; });
+  const starting = $('#start').onclick();
+  const disconnecting = hardware.driver.onDisconnected();
+  finishSubscription();
+  await Promise.all([starting, disconnecting]);
+  expect($('[data-session-status]').textContent).toBe('paused_disconnected');
+  hardware.subscriptionGate = null;
+  await $('#reconnect').onclick();
+  await vi.advanceTimersByTimeAsync(2300);
+  expect($('[data-session-clock]').textContent).toBe('00:00:02');
+  expect($('[data-protocol-clock]').textContent).toBe('00:00:02');
+  await $('#stop').onclick();
+});
+
+it('exports once when Stop is clicked twice while Bluetooth startup is pending', async () => {
+  const {$, download} = await setupRecorder();
+  let finishSubscription;
+  hardware.subscriptionGate = new Promise(resolve => { finishSubscription = resolve; });
+  const starting = $('#start').onclick();
+  const firstStop = $('#stop').onclick();
+  const secondStop = $('#stop').onclick();
+  finishSubscription();
+  await Promise.all([starting, firstStop, secondStop]);
+  expect(download).toHaveBeenCalledTimes(1);
+  expect(hardware.callbacks.size).toBe(0);
   expect($('[data-live-status]').textContent).toBe('ENDED');
 });

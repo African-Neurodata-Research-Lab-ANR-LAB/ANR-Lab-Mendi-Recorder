@@ -6,7 +6,7 @@
 
 **Architecture:** Keep browser acquisition and local export authoritative. Add small health, display, and bridge modules; publish raw optical/IMU values and timestamped markers through Python.
 
-**Tech Stack:** Existing Vite/JavaScript/Vitest; Python 3.10+, websockets 14–15, pylsl 1.17+.
+**Tech Stack:** Existing Vite/JavaScript/Vitest; Python 3.10+, websockets 15, pylsl 1.17+.
 
 **Spec:** `docs/superpowers/specs/2026-10-02-live-stream-lsl.md`
 
@@ -33,9 +33,9 @@
 
 **Interfaces:** `StreamHealth.observe(optical, imu, nowMs)` returns repeat flag; `snapshot(nowMs)` returns diagnostic values. `LiveTraceBuffer.getWindow(endSeconds, windowSeconds)` returns traces. Renderer options include explicit start/end seconds and gap threshold.
 
-- [ ] Write behavioural tests for repeats, stale arrivals, missing IMU, rolling expiration, irregular timestamps and line gaps; run and confirm failure.
-- [ ] Implement diagnostics and timestamp-based plotting.
-- [ ] Run focused tests and existing suite; commit.
+- [x] Write behavioural tests for repeats, stale arrivals, missing IMU, rolling expiration, irregular timestamps and line gaps; run and confirm failure.
+- [x] Implement diagnostics and timestamp-based plotting.
+- [x] Run focused tests and existing suite; commit.
 
 ### Task 2: Browser streaming and recorder integration
 
@@ -43,9 +43,9 @@
 
 **Interfaces:** `LslClient.connect(url)`, `begin(runId)`, `send(message)`, `end()`, `disconnect()`, `snapshot()`. `LiveSession.begin(session)`, `observe(optical, imu, receiptMs, transport)`, `flushMarkers()`, `end()`.
 
-- [ ] Write failing tests for clock mapping, connection loss/backpressure, session resets, delayed event timestamps and Hb gate.
-- [ ] Implement client and coordinator; wire to the real controller and panel.
-- [ ] Run focused integration tests and suite; commit.
+- [x] Write failing tests for clock mapping, connection loss/backpressure, session resets, delayed event timestamps and Hb gate.
+- [x] Implement client and coordinator; wire to the real controller and panel.
+- [x] Run focused integration tests and suite; commit.
 
 ### Task 3: Python bridge and user guide
 
@@ -53,12 +53,20 @@
 
 **Interfaces:** A validated v1 JSON protocol with sync/start/sample/event/stop. `BridgeSession.handle(message)` sends values to injected outlets and returns protocol responses. WebSocket handler enforces loopback origins and one active connection.
 
-- [ ] Write failing Python tests for fixed timestamp mapping, malformed/missing data, duplicates, and actual WebSocket ingestion.
-- [ ] Implement bridge, real LSL metadata/outlets, Windows setup instructions, MNE receiver and hardware acceptance procedure.
-- [ ] Run unit/integration tests and actual LSL outlet/inlet smoke test; commit.
+- [x] Write failing Python tests for fixed timestamp mapping, malformed/missing data, duplicates, and actual WebSocket ingestion.
+- [x] Implement bridge, real LSL metadata/outlets, Windows setup instructions, MNE receiver and hardware acceptance procedure.
+- [x] Run unit/integration tests and actual LSL outlet/inlet smoke test; commit.
 
 ### Task 4: End-to-end verification and review
 
-- [ ] Run full JS suite, Python suite, production build, and browser-to-LSL smoke test.
-- [ ] Request an independent whole-change review and resolve material findings with regression tests.
-- [ ] Prepare feature branch/draft PR; report hardware validation still outstanding.
+- [x] Run the full JS suite, Python suite, production build, recorder controller integration, and WebSocket-to-LSL smoke test.
+- [x] Request an independent whole-change review and resolve material findings with regression tests.
+- [x] Prepare feature branch/draft PR; report hardware validation still outstanding.
+
+## Verification record (2026-10-03)
+
+- 92 JavaScript test files / 158 tests passed; production build and diff whitespace check passed.
+- Six Python tests passed. The synthetic loopback smoke test received data through all four real LSL outlets/inlets and verified marker timestamps.
+- Independent review: no remaining critical or important findings after regression fixes for startup cancellation, reconnect monitoring, duplicate Stop, bridge shutdown, partial optical channels, and sparse trace rendering.
+- Minor display follow-ups: a session without its first optical frame remains WAITING; same-onset marker captions may overlap.
+- Physical Mendi acquisition continuity and metadata validation remain outstanding. Browser raster inspection was unavailable in this environment; controller/DOM and canvas geometry are covered by tests.

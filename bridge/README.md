@@ -111,22 +111,36 @@ manifest. The local manifest is the complete recording source.
 After installing `mne-lsl` in an analysis environment and starting a session:
 
 ```python
+import time
 from mne_lsl.stream import StreamLSL
 
 # For irregular-rate streams, bufsize is a number of samples.
 stream = StreamLSL(bufsize=1000, name="ANR_Mendi_Optical").connect()
 try:
-    data, timestamps = stream.get_data()
+    deadline = time.monotonic() + 10
+    while stream.n_new_samples == 0:
+        if time.monotonic() >= deadline:
+            raise TimeoutError("No optical samples received; check the recorder.")
+        time.sleep(0.05)
+    data, timestamps = stream.get_data(winsize=min(stream.n_new_samples, stream.n_buffer))
     print(data.shape, timestamps)  # channels x samples, LSL-clock seconds
 finally:
     stream.disconnect()
 ```
 
-Wait for data to arrive before taking a snapshot; do not assume 10 Hz or
-another rate. Channels are `misc` raw values. MNE-NIRS haemoglobin conversion
+Do not assume 10 Hz or another rate. The example waits for actual arrivals;
+for an irregular stream, both buffer size and requested window are sample
+counts (see the [StreamLSL API](https://mne.tools/mne-lsl/stable/generated/api/mne_lsl.stream.StreamLSL.html)).
+Channels are `misc` raw values. MNE-NIRS haemoglobin conversion
 is deliberately not called: wavelengths, optode geometry, pathlength
 assumptions and continuous acquisition need validation first. The old
 unvalidated Hb preview methods are now disabled.
+
+The event stream contains JSON strings. Read it with a low-level LSL inlet
+(for example `pylsl.StreamInlet`) and use its explicit timestamps to align
+markers with optical data. MNE-LSL's high-level `EpochsStream` currently
+requires numerical event channels; see its
+[epoching tutorial](https://mne.tools/mne-lsl/stable/generated/tutorials/40_epochs.html).
 
 ## Verification
 

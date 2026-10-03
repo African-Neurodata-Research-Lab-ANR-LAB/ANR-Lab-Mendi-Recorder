@@ -125,6 +125,7 @@ let experimentEngine = null;
 let preparedMetadata = null;
 let acquisitionPacketHandler = null;
 let monitorTimer = null;
+let stopInProgress = false;
 let lastCheckpointAtMs = 0;
 
 state.browserSupport =
@@ -690,6 +691,7 @@ root
         });
       recordingStarted = true;
       liveSession.begin(session);
+      startMonitorTimer();
 
       state.monitor.imu = {
         enabled:
@@ -719,11 +721,9 @@ root
           }
         );
 
-      if (!started) {
-        throw new Error("Mendi acquisition is already active.");
-      }
+      // Stop/disconnect may have cancelled a pending Bluetooth operation.
+      if (!started) return;
 
-      startMonitorTimer();
       saveCheckpoint(true);
       render();
     } catch (error) {
@@ -744,6 +744,7 @@ root
           setProtocolBuilderLocked
         });
         liveSession.end();
+        stopMonitorTimer();
         experimentEngine = null;
       }
 
@@ -759,6 +760,7 @@ root
 root
   .querySelector("#stop")
   .onclick = async () => {
+    if (stopInProgress) return;
     if (
       ![
         "recording",
@@ -771,112 +773,117 @@ root
       return;
     }
 
+    stopInProgress = true;
     try {
-      await stopAcquisition(
-        driver
-      );
-    } catch (error) {
-      state.error = error.message;
+      try {
+        await stopAcquisition(
+          driver
+        );
+      } catch (error) {
+        state.error = error.message;
+      }
+
+      if (
+        state.sessionStatus ===
+        "stopping"
+      ) {
+        session.addMarker(
+          "SESSION_END",
+          "system"
+        );
+
+        session.stop();
+
+        completePreparedExperiment({
+          experimentEngine,
+          state,
+          root,
+          setProtocolBuilderLocked
+        });
+
+        state.recording =
+          "stopped";
+      } else {
+        abortPreparedExperiment({
+          session,
+          experimentEngine,
+          state,
+          root,
+          setProtocolBuilderLocked
+        });
+      }
+
+      experimentEngine = null;
+      liveSession.end();
+      stopMonitorTimer();
+      saveCheckpoint(true);
+      render();
+
+      const snapshot =
+        session.snapshot();
+
+      const metadata =
+        buildMetadata(snapshot);
+
+      const snirf =
+        createSnirf(snapshot);
+
+      const raw =
+        rawPacketsCsv(
+          session.raw.getAll()
+        );
+
+      const decoded =
+        decodedOpticalCsv(
+          session.decoded
+        );
+
+      const events =
+        eventsTsv(
+          session.markers.all()
+        );
+
+      const blob =
+        new Blob(
+          [
+            JSON.stringify(
+              {
+                metadata,
+                snirf,
+                rawPacketsCsv: raw,
+                decodedOpticalCsv:
+                  decoded,
+                eventsTsv: events
+              },
+              null,
+              2
+            )
+          ],
+          {
+            type:
+              "application/json"
+          }
+        );
+
+      const url =
+        URL.createObjectURL(blob);
+
+      const a =
+        document.createElement("a");
+
+      a.href = url;
+      a.download =
+        `${
+          preparedMetadata
+            .sessionCode ||
+          "mendi-session"
+        }_manifest.json`;
+
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      stopInProgress = false;
     }
-
-    if (
-      state.sessionStatus ===
-      "stopping"
-    ) {
-      session.addMarker(
-        "SESSION_END",
-        "system"
-      );
-
-      session.stop();
-
-      completePreparedExperiment({
-        experimentEngine,
-        state,
-        root,
-        setProtocolBuilderLocked
-      });
-
-      state.recording =
-        "stopped";
-    } else {
-      abortPreparedExperiment({
-        session,
-        experimentEngine,
-        state,
-        root,
-        setProtocolBuilderLocked
-      });
-    }
-
-    experimentEngine = null;
-    liveSession.end();
-    stopMonitorTimer();
-    saveCheckpoint(true);
-    render();
-
-    const snapshot =
-      session.snapshot();
-
-    const metadata =
-      buildMetadata(snapshot);
-
-    const snirf =
-      createSnirf(snapshot);
-
-    const raw =
-      rawPacketsCsv(
-        session.raw.getAll()
-      );
-
-    const decoded =
-      decodedOpticalCsv(
-        session.decoded
-      );
-
-    const events =
-      eventsTsv(
-        session.markers.all()
-      );
-
-    const blob =
-      new Blob(
-        [
-          JSON.stringify(
-            {
-              metadata,
-              snirf,
-              rawPacketsCsv: raw,
-              decodedOpticalCsv:
-                decoded,
-              eventsTsv: events
-            },
-            null,
-            2
-          )
-        ],
-        {
-          type:
-            "application/json"
-        }
-      );
-
-    const url =
-      URL.createObjectURL(blob);
-
-    const a =
-      document.createElement("a");
-
-    a.href = url;
-    a.download =
-      `${
-        preparedMetadata
-          .sessionCode ||
-        "mendi-session"
-      }_manifest.json`;
-
-    a.click();
-    URL.revokeObjectURL(url);
   };
 
 root

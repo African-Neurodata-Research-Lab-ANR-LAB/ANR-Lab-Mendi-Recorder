@@ -98,8 +98,14 @@ export class LslClient {
   }
 
   end() {
-    if (this.active) this.rawSend({type: 'stop', run_id: this.runId});
-    clearTimeout(this.timer);
+    // A start message can already have created outlets before its reply arrives.
+    // WebSocket ordering ensures the matching stop follows it in either case.
+    if (this.runId && (this.active || this.status === 'STARTING')) {
+      if (!this.rawSend({type: 'stop', run_id: this.runId})) {
+        this.fail('Unable to stop the bridge stream. Connection closed; reconnect the bridge.');
+      }
+      clearTimeout(this.timer);
+    }
     this.runId = null; this.active = false;
     if (this.synced) this.status = 'CONNECTED';
   }

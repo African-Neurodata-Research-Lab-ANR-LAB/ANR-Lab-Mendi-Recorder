@@ -47,15 +47,27 @@ export function renderTrace(canvas, traces, options = {}) {
       }
       ctx.strokeStyle = color; ctx.lineWidth = 1.7; ctx.beginPath();
       let previous = null;
+      let segmentLength = 0;
+      const isolated = [];
       for (const point of valid) {
         const x = xAt(times[point.index], point.index, samples.length);
         const y = yAt(point.value);
         const gap = previous && timed && times[point.index] - times[previous.index] > (options.gapSeconds ?? 2);
-        if (!previous || point.index !== previous.index + 1 || gap) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+        if (!previous || point.index !== previous.index + 1 || gap) {
+          if (segmentLength === 1) isolated.push(previous);
+          ctx.moveTo(x, y);
+          segmentLength = 1;
+        } else {
+          ctx.lineTo(x, y);
+          segmentLength += 1;
+        }
         previous = point;
       }
       ctx.stroke();
+      if (segmentLength === 1) isolated.push(previous);
+      for (const point of isolated) {
+        dot(ctx, xAt(times[point.index], point.index, samples.length), yAt(point.value), color);
+      }
     }
   }
   if (!timed) return;
