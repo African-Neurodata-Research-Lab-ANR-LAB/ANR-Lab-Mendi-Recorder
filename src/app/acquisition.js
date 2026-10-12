@@ -48,7 +48,11 @@ export async function startAcquisition(
         DEFAULT_FRAME_POLL_MS
     );
 
+  let finishStartup;
   const acquisition = {
+    cancelled: false,
+    startupDone: new Promise(resolve => { finishStartup = resolve; }),
+    stopPromise: null,
     subscribed: [],
     fallbackTimer: null,
     pollInFlight: false,
@@ -65,6 +69,7 @@ export async function startAcquisition(
 
   const handlePacket =
     packet => {
+      if (acquisition.cancelled || activeAcquisitions.get(driver) !== acquisition) return;
       if (
         isMendiCharacteristic(
           packet.characteristicUuid,
@@ -112,6 +117,8 @@ export async function startAcquisition(
       acquisition
         .subscribed
         .push(key);
+
+      if (acquisition.cancelled) return false;
     }
 
     // Some Mendi V4 firmware needs this documented ABB2 request before
@@ -122,6 +129,8 @@ export async function startAcquisition(
     ) {
       await driver.enableSensor();
     }
+
+    if (acquisition.cancelled) return false;
 
     // If ABB1 notifications stall, fall back to the characteristic's
     // read-only readValue() path. Notifications remain preferred.
@@ -185,9 +194,9 @@ export async function startAcquisition(
 
     return true;
   } catch (error) {
-    activeAcquisitions.delete(
-      driver
-    );
+    // Stop owns cleanup once cancellation is requested. It waits for the
+    // in-flight subscribe/write to settle before removing subscriptions.
+    if (acquisition.cancelled) return false;
 
     if (
       acquisition.fallbackTimer !==
@@ -216,8 +225,13 @@ export async function startAcquisition(
       }
     }
 
+    acquisition.subscribed.length = 0;
+    if (activeAcquisitions.get(driver) === acquisition) activeAcquisitions.delete(driver);
+
     options.onFailure?.(error);
     throw error;
+  } finally {
+    finishStartup();
   }
 }
 
@@ -227,44 +241,54 @@ export async function stopAcquisition(
   const acquisition =
     activeAcquisitions.get(driver);
 
-  activeAcquisitions.delete(driver);
-
   if (!acquisition) {
     return;
   }
 
-  if (
-    acquisition.fallbackTimer !==
-    null
-  ) {
-    try {
-      acquisition.clearIntervalFn.call(
-        globalThis,
-        acquisition.fallbackTimer
-      );
-    } catch {
-      // Continue cleanup even if the browser timer was already cleared.
+  if (acquisition.stopPromise) return acquisition.stopPromise;
+  acquisition.cancelled = true;
+  acquisition.stopPromise = (async () => {
+    // A pending subscription can install its handler after Stop was clicked.
+    // Keep the acquisition locked until startup and cleanup have both settled.
+    await acquisition.startupDone;
+
+    if (
+      acquisition.fallbackTimer !==
+      null
+    ) {
+      try {
+        acquisition.clearIntervalFn.call(
+          globalThis,
+          acquisition.fallbackTimer
+        );
+      } catch {
+        // Continue cleanup even if the browser timer was already cleared.
+      }
     }
-  }
 
-  let firstError = null;
+    let firstError = null;
 
-  for (
-    const key of
-    acquisition.subscribed
-      .slice()
-      .reverse()
-  ) {
-    try {
-      await driver.unsubscribe(key);
-    } catch (error) {
-      firstError ??= error;
+    for (
+      const key of
+      acquisition.subscribed
+        .slice()
+        .reverse()
+    ) {
+      try {
+        await driver.unsubscribe(key);
+      } catch (error) {
+        firstError ??= error;
+      }
     }
-  }
 
-  if (firstError) {
-    throw firstError;
-  }
+    acquisition.subscribed.length = 0;
+    if (activeAcquisitions.get(driver) === acquisition) activeAcquisitions.delete(driver);
+
+    if (firstError) {
+      throw firstError;
+    }
+  })();
+  return acquisition.stopPromise;
 }
 
 export async function handleAcquisitionDisconnect(

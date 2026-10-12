@@ -11,15 +11,15 @@ function mapChannel(channel) {
   }
 
   if (
-    !finite(channel.red) ||
+    !finite(channel.red) &&
     !finite(channel.ir)
   ) {
     return null;
   }
 
   return {
-    red: channel.red,
-    infrared: channel.ir,
+    red: finite(channel.red) ? channel.red : null,
+    infrared: finite(channel.ir) ? channel.ir : null,
     ambient:
       finite(channel.ambient)
         ? channel.ambient
@@ -41,7 +41,7 @@ export function extractOpticalSample(frame) {
   const left =
     mapChannel(frame.left);
 
-  if (!left) {
+  if (!left || !finite(left.red) || !finite(left.infrared)) {
     return null;
   }
 

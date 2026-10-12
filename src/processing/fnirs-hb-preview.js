@@ -1,7 +1,4 @@
-// Lightweight fNIRS preview layer.
-// Converts raw optical intensity changes into relative HbO/HbR trends.
-// This is a preview only: full calibration, MBLL path length factors,
-// extinction coefficients and motion correction will be added later.
+// Optical-density helper only. Haemoglobin output is gated pending validation.
 
 function safeLog(value) {
   if (!Number.isFinite(value) || value <= 0) return null;
@@ -16,24 +13,9 @@ export function opticalDensity(current, baseline) {
   return safeLog(baseline / current);
 }
 
-export function estimateHbPreview({ red, infrared, baseline }) {
-  const redOD = opticalDensity(red, baseline?.red);
-  const irOD = opticalDensity(infrared, baseline?.infrared);
-
-  if (redOD === null || irOD === null) {
-    return {
-      hbo: null,
-      hbr: null,
-      status: "INSUFFICIENT_BASELINE"
-    };
-  }
-
-  return {
-    // Relative preview signals only.
-    hbo: irOD - redOD,
-    hbr: redOD - irOD,
-    status: "PREVIEW"
-  };
+export function estimateHbPreview() {
+  return {hbo: null, hbr: null, status: "UNVALIDATED",
+    reason: "Validated acquisition, wavelength/geometry metadata, and a tested haemoglobin conversion are required."};
 }
 
 export function createHbPreviewProcessor() {
